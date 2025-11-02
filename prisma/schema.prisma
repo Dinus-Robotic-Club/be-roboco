@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,4 +6,64 @@ datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
+}
+
+enum CompetitionCategory {
+  SUMO
+  SOCCER
+}
+
+enum RoleParticipant {
+  MEMBER
+  LEADER
+}
+
+enum BracketType {
+  GROUP
+  UPPER
+  LOWER
+  GRAND_FINAL
+}
+
+enum MatchStatus {
+  PENDING
+  SCHEDULED
+  ONGOING
+  FINISHED
+  CANCELLED
+}
+
+model User {
+  uid       String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  password  String
+  resetToken String? @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Participant {
+ uid       String    @id @default(uuid())
+ name      String 
+ teamId    String
+ image     String   
+ role      RoleParticipant
+ createdAt DateTime  @default(now())
+ updatedAt DateTime  @updatedAt
+ team     Team      @relation(fields: [teamId], references: [uid])
+}
+
+model Team {
+  uid      String    @id @default(uuid())
+  name     String    
+  school   String
+  password String
+  twibbon  String
+  invoice  String
+  resetToken String? @unique
+  participants Participant[]
+  category  CompetitionCategory
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
