@@ -647,488 +647,308 @@ export const templateSendQr = async (qrCode: string, name: string, expiredAt: st
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
-      rel="stylesheet"
-    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>DN ROBOCO</title>
+    <!--[if mso]>
+    <style type="text/css">
+      table {border-collapse: collapse;}
+    </style>
+    <![endif]-->
     <style>
-      * {
-        box-sizing: border-box;
-      }
-
+      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap');
+      
       body {
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-text-size-adjust: 100% !important;
+        -ms-text-size-adjust: 100% !important;
+        -webkit-font-smoothing: antialiased !important;
+      }
+      
+      img {
+        border: 0 !important;
+        outline: none !important;
+        display: block;
+      }
+      
+      table {
+        border-collapse: collapse;
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+      }
+      
+      td {
         margin: 0;
         padding: 0;
-        width: 100%;
-        background-color: white;
-        position: relative;
-        font-family: "Plus Jakarta Sans", sans-serif;
       }
-
-      .font-pixellari {
-        font-family: "Pixellari", sans-serif;
-      }
-
+      
       .font-jakarta {
-        font-family: "Plus Jakarta Sans", sans-serif;
+        font-family: 'Plus Jakarta Sans', Arial, sans-serif !important;
       }
-
-      .font-digital {
-        font-family: "Digital Desolation Plus", sans-serif;
-      }
-
-      @font-face {
-        font-family: "Pixellari";
-        src: url("./Pixellari.ttf");
-        font-weight: normal;
-        font-style: normal;
-      }
-
-      @font-face {
-        font-family: "Digital Desolation Plus";
-        src: url("./Digital-Desolation-Plus.otf");
-        font-weight: normal;
-        font-style: normal;
-      }
-
-      .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        height: auto;
-        flex-direction: column;
-        gap: 40px;
-        padding-top: 80px;
-        padding-bottom: 40px;
-      }
-
-      @media (min-width: 768px) {
+      
+      /* Responsive styles */
+      @media only screen and (max-width: 600px) {
         .container {
-          gap: 56px;
+          width: 100% !important;
+          max-width: 100% !important;
         }
-      }
-
-      @media (min-width: 1024px) {
-        .container {
-          padding-bottom: 80px;
+        
+        .mobile-padding {
+          padding-left: 20px !important;
+          padding-right: 20px !important;
         }
-      }
-
-      /* Logo */
-      .logo {
-        width: auto;
-        padding-left: 32px;
-        padding-right: 32px;
-        max-width: 100%;
-      }
-
-      /* Plus icons */
-      .plus-container {
-        max-width: 384px;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        padding-left: 32px;
-        padding-right: 32px;
-      }
-
-      .plus-icon {
-        width: auto;
-        max-width: 100%;
-      }
-
-      .text-section {
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-      }
-
-      .title {
-        font-family: "Pixellari", sans-serif;
-        font-size: 30px;
-        margin: 0;
-      }
-
-      @media (min-width: 768px) {
+        
         .title {
-          font-size: 37px;
+          font-size: 24px !important;
+          line-height: 32px !important;
         }
-      }
-
-      .description {
-        font-family: "Plus Jakarta Sans", sans-serif;
-        font-size: 14px;
-        max-width: 512px;
-        text-align: center;
-        padding-left: 8px;
-        padding-right: 8px;
-        margin: 0;
-        line-height: 1.5;
-      }
-
-      @media (min-width: 768px) {
+        
         .description {
-          font-size: 16px;
+          font-size: 14px !important;
+          line-height: 20px !important;
         }
-      }
-
-      .qr-section {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding-left: 32px;
-        padding-right: 32px;
-        gap: 15px;
         
-      }
-
-      .qr-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 24px;
+        .qr-code {
+          width: 180px !important;
+          height: 180px !important;
+        }
         
-      }
-
-      .qr-decoration {
-        width: auto;
-        display: none;
-        max-width: 100%;
+        .qr-padding {
+          padding: 24px !important;
+        }
         
-      }
-
-      @media (min-width: 768px) {
-        .qr-decoration {
-          display: block;
+        .contact-table {
+          width: 100% !important;
+        }
+        
+        .contact-cell {
+          display: block !important;
+          width: 100% !important;
+          padding: 15px 0 !important;
+        }
+        
+        .plus-icon {
+          width: 24px !important;
+          height: 24px !important;
+        }
+        
+        .footer-arrow {
+          width: 32px !important;
+          height: 32px !important;
+        }
+        
+        .footer-text-img {
+          width: 90% !important;
+          max-width: 280px !important;
         }
       }
-
-      .qr-background {
-        background-color: #fbff00;
-        padding: 32px;
-        border-radius: 10px;
-        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-      }
-
-      .qr-code {
-        max-width: 250px;
-        width: 100%;
-        display: block;
-      }
-
-      .qr-note {
-        font-family: "Plus Jakarta Sans", sans-serif;
-        font-size: 12px;
-        max-width: 512px;
-        text-align: center;
-        padding-left: 8px;
-        padding-right: 8px;
-        font-style: italic;
-        margin: 0;
-      }
-
-      @media (min-width: 768px) {
-        .qr-note {
-          font-size: 14px;
+      
+      @media only screen and (max-width: 480px) {
+        .title {
+          font-size: 20px !important;
+          line-height: 28px !important;
         }
-      }
-
-      .button {
-        cursor: pointer;
-        background-color: #fbff00;
-        padding: 15px 28px;
-        border-radius: 10px;
-        font-family: "Plus Jakarta Sans", sans-serif;
-        font-weight: 500;
-        text-decoration: none;
-        color: black;
-        display: inline-block;
-        border: none;
-        font-size: 16px;
-      }
-
-      .contact-section {
-        display: flex;
-        flex-direction: column;
-        gap: 32px;
-        align-items: center;
-      }
-
-      .contact-title {
-        font-family: "Plus Jakarta Sans", sans-serif;
-        font-weight: bold;
-        font-size: 16px;
-        font-style: italic;
-        margin: 0;
-      }
-
-      .contact-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        gap: 20px;
-        align-items: center;
-      }
-
-      @media (min-width: 768px) {
-        .contact-container {
-          flex-direction: row;
-          gap: 56px;
+        
+        .qr-code {
+          width: 160px !important;
+          height: 160px !important;
         }
-      }
-
-      .contact-logo-mobile {
-        min-width: 64px;
-        display: block;
-        max-width: 100%;
-      }
-
-      @media (min-width: 768px) {
-        .contact-logo-mobile {
-          display: none;
-        }
-      }
-
-      .contact-logo-desktop {
-        min-width: 64px;
-        display: none;
-        max-width: 100%;
-      }
-
-      @media (min-width: 768px) {
-        .contact-logo-desktop {
-          min-width: 100px;
-          display: block;
-        }
-      }
-
-      .contact-info {
-        text-align: center;
-      }
-
-      @media (min-width: 768px) {
-        .contact-info {
-          text-align: end;
-        }
-      }
-
-      .contact-info-right {
-        text-align: center;
-      }
-
-      @media (min-width: 768px) {
-        .contact-info-right {
-          text-align: start;
-        }
-      }
-
-      .contact-name {
-        font-family: "Digital Desolation Plus", sans-serif;
-        font-size: 14px;
-        margin: 0 0 8px 0;
-      }
-
-      @media (min-width: 768px) {
-        .contact-name {
-          font-size: 16px;
-        }
-      }
-
-      .contact-detail {
-        font-family: "Plus Jakarta Sans", sans-serif;
-        font-size: 10px;
-        margin: 4px 0;
-      }
-
-      @media (min-width: 768px) {
-        .contact-detail {
-          font-size: 14px;
-        }
-      }
-
-      footer {
-        width: 100%;
-        background: none;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 28px;
-        height: 100px;
-        padding-top: 16px;
-      }
-
-      @media (min-width: 768px) {
-        footer {
-          background: url("./footer.svg");
-          background-repeat: no-repeat;
-          background-position: center;
-          margin-bottom: 0;
-          margin-top: 0;
-          height: 170px;
-        }
-      }
-
-      .footer-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding-left: 12px;
-        padding-right: 12px;
-        width: 100%;
-        max-width: 1200px;
-      }
-
-      .footer-title {
-        font-family: "Pixellari", sans-serif;
-        font-size: 16px;
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 12px;
-        margin: 0;
-        width: 100%;
-      }
-
-      @media (min-width: 768px) {
-        .footer-title {
-          font-size: 22px;
-        }
-      }
-
-      .footer-text-element {
-        font-size: 16px;
-        margin: 0;
-      }
-
-      @media (min-width: 1024px) {
-        .footer-text-element {
-          font-size: 22px;
-        }
-      }
-
-      .arrow {
-        width: auto;
-        max-width: 100%;
-      }
-
-      .rotate-180 {
-        transform: rotate(180deg);
-      }
-
-      .footer-text {
-        width: auto;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 8px;
-        max-width: 98%;
-        height: auto;
-      }
-
-      @media (max-width: 767px) {
-        .footer-text {
-          width: 98%;
-        }
-
-        .footer-container {
-          padding-left: 16px;
-          padding-right: 16px;
-        }
-
-        .footer-title {
-          gap: 8px;
-        }
-
-        .arrow {
-          max-width: 40px;
-        }
-      }
-
-      @media (max-width: 480px) {
-        .footer-text {
-          width: 98%;
-        }
-
-        .footer-title {
-          font-size: 14px;
-          gap: 6px;
-        }
-
-        .arrow {
-          max-width: 40px;
+        
+        .qr-padding {
+          padding: 20px !important;
         }
       }
     </style>
   </head>
-  <body>
-    <div class="container">
-      <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/logo_text.svg" alt="logo" class="logo" />
-      <div class="plus-container">
-        <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/plus.svg" alt="plus" class="plus-icon" />
-        <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/plus.svg" alt="plus" class="plus-icon" />
-        <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/plus.svg" alt="plus" class="plus-icon" />
-      </div>
-      <div class="text-section">
-        <h1 class="title">${name}</h1>
-        <p class="description">
-          Terima kasih telah menjadi bagian dari DN Roboco 2026. dengan ini kami memberikan akses masuk dengan menggunakan QR Code
-          yang ada di bawah ini.
-        </p>
-      </div>
-      <div class="qr-section">
-        <div class="qr-container">
-          <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/left_element.svg" alt="left_element" class="qr-decoration" />
-          <div class="qr-background">
-            <img src="${BASE_URL}/qr/${qrCode}" alt="qrcode" class="qr-code" />
-          </div>
-          <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/right_element.svg" alt="right_element" class="qr-decoration" />
-        </div>
-        <p class="qr-note">Berlaku hingga 24 Januari 2026</p>
-      </div>
-      <div class="plus-container">
-        <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/plus.svg" alt="plus" class="plus-icon" />
-        <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/plus.svg" alt="plus" class="plus-icon" />
-        <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/plus.svg" alt="plus" class="plus-icon" />
-      </div>
-      <div class="contact-section">
-        <h1 class="contact-title">Contact Person</h1>
-        <div class="contact-container">
-          <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/logo.svg" alt="logo" class="contact-logo-mobile" />
-          <div class="contact-info">
-            <h1 class="contact-name">mahendra alif</h1>
-            <p class="contact-detail">+6288236457475</p>
-            <p class="contact-detail">https://wa.me/6288236457475</p>
-          </div>
-          <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/logo.svg" alt="logo" class="contact-logo-desktop" />
-          <div class="contact-info-right">
-            <h1 class="contact-name">alif mahendra</h1>
-            <p class="contact-detail">+6288236457475</p>
-            <p class="contact-detail">https://wa.me/6288236457475</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <footer>
-      <div class="footer-container">
-        <div class="footer-title">
-          <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/arrow-right.svg" class="arrow rotate-180" alt="arrow" />
-          <p class="footer-text-element">DN ROBOCO.</p>
-          <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/arrow-right.svg" class="arrow" alt="arrow" />
-        </div>
-        <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/footer_text.svg" alt="footer_text" class="footer-text" />
-      </div>
-    </footer>
-  </body>
-</html>
+  <body style="margin:0; padding:0; background-color:#ffffff;">
+    <!-- Main Container -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;">
+      <tr>
+        <td align="center" style="padding:0;">
+          <!-- Content Table -->
+          <table role="presentation" class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; width:100%; margin:0 auto;">
+            
+            <!-- Logo Section -->
+            <tr>
+              <td align="center" class="mobile-padding" style="padding:40px 32px 20px;">
+                <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/logo_text.svg" 
+                     alt="DN ROBOCO Logo" 
+                     style="width:200px; max-width:80%; height:auto; display:block; margin:0 auto;" />
+              </td>
+            </tr>
 
-`
+            <!-- Plus Icons Top -->
+            <tr>
+              <td align="center" class="mobile-padding" style="padding:20px 32px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%; max-width:384px;">
+                  <tr>
+                    <td align="center" width="33.33%" style="padding:0 8px;">
+                      <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/plus.svg" 
+                           alt="Plus" 
+                           class="plus-icon"
+                           style="width:30px; height:30px; display:block; margin:0 auto;" />
+                    </td>
+                    <td align="center" width="33.33%" style="padding:0 8px;">
+                      <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/plus.svg" 
+                           alt="Plus" 
+                           class="plus-icon"
+                           style="width:30px; height:30px; display:block; margin:0 auto;" />
+                    </td>
+                    <td align="center" width="33.33%" style="padding:0 8px;">
+                      <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/plus.svg" 
+                           alt="Plus" 
+                           class="plus-icon"
+                           style="width:30px; height:30px; display:block; margin:0 auto;" />
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Title Section -->
+            <tr>
+              <td align="center" class="mobile-padding" style="padding:20px 32px;">
+                <h1 class="title" style="font-family:'Plus Jakarta Sans',Arial,sans-serif; font-size:30px; line-height:38px; margin:0 0 16px 0; color:#000000; font-weight:700;">
+                  ${name}
+                </h1>
+                <p class="description" style="font-family:'Plus Jakarta Sans',Arial,sans-serif; font-size:16px; line-height:24px; color:#333333; margin:0; max-width:480px;">
+                  Terima kasih telah menjadi bagian dari DN Roboco 2026. dengan ini kami memberikan akses masuk dengan menggunakan QR Code yang ada di bawah ini.
+                </p>
+              </td>
+            </tr>
+
+            <!-- QR Code Section -->
+            <tr>
+              <td align="center" class="mobile-padding" style="padding:30px 32px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td align="center" class="qr-padding" style="background-color:#fbff00; padding:32px; border-radius:10px;">
+                      <img src="${BASE_URL}/qr/${qrCode}" 
+                           alt="QR Code" 
+                           class="qr-code"
+                           style="width:200px; height:200px; display:block; margin:0 auto;" />
+                    </td>
+                  </tr>
+                </table>
+                <p style="font-family:'Plus Jakarta Sans',Arial,sans-serif; font-size:12px; font-style:italic; color:#555555; margin:12px 0 0 0;">
+                  Berlaku hingga ${expiredAt}
+                </p>
+              </td>
+            </tr>
+
+            <!-- Plus Icons Bottom -->
+            <tr>
+              <td align="center" class="mobile-padding" style="padding:20px 32px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%; max-width:384px;">
+                  <tr>
+                    <td align="center" width="33.33%" style="padding:0 8px;">
+                      <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/plus.svg" 
+                           alt="Plus" 
+                           class="plus-icon"
+                           style="width:30px; height:30px; display:block; margin:0 auto;" />
+                    </td>
+                    <td align="center" width="33.33%" style="padding:0 8px;">
+                      <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/plus.svg" 
+                           alt="Plus" 
+                           class="plus-icon"
+                           style="width:30px; height:30px; display:block; margin:0 auto;" />
+                    </td>
+                    <td align="center" width="33.33%" style="padding:0 8px;">
+                      <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/plus.svg" 
+                           alt="Plus" 
+                           class="plus-icon"
+                           style="width:30px; height:30px; display:block; margin:0 auto;" />
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Contact Section -->
+            <tr>
+              <td align="center" class="mobile-padding" style="padding:30px 32px;">
+                <h2 style="font-family:'Plus Jakarta Sans',Arial,sans-serif; font-size:18px; font-weight:bold; font-style:italic; margin:0 0 24px 0; color:#000000;">
+                  Contact Person
+                </h2>
+                <table role="presentation" class="contact-table" cellpadding="0" cellspacing="0" border="0" style="width:100%; max-width:500px;">
+                  <tr>
+                    <td class="contact-cell" align="center" style="padding:10px 20px;">
+                      <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/logo.svg" 
+                           alt="Logo" 
+                           style="width:60px; height:60px; display:block; margin:0 auto 12px;" />
+                      <p style="font-family:'Plus Jakarta Sans',Arial,sans-serif; font-weight:bold; font-size:14px; margin:0 0 6px 0; color:#000000;">
+                        mahendra alif
+                      </p>
+                      <p style="font-family:'Plus Jakarta Sans',Arial,sans-serif; font-size:12px; margin:2px 0; color:#333333;">
+                        +6288236457475
+                      </p>
+                      <p style="font-family:'Plus Jakarta Sans',Arial,sans-serif; font-size:12px; margin:2px 0; color:#333333;">
+                        https://wa.me/6288236457475
+                      </p>
+                    </td>
+                    <td class="contact-cell" align="center" style="padding:10px 20px;">
+                      <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/logo.svg" 
+                           alt="Logo" 
+                           style="width:60px; height:60px; display:block; margin:0 auto 12px;" />
+                      <p style="font-family:'Plus Jakarta Sans',Arial,sans-serif; font-weight:bold; font-size:14px; margin:0 0 6px 0; color:#000000;">
+                        alif mahendra
+                      </p>
+                      <p style="font-family:'Plus Jakarta Sans',Arial,sans-serif; font-size:12px; margin:2px 0; color:#333333;">
+                        +6288236457475
+                      </p>
+                      <p style="font-family:'Plus Jakarta Sans',Arial,sans-serif; font-size:12px; margin:2px 0; color:#333333;">
+                        https://wa.me/6288236457475
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Footer Section -->
+            <tr>
+              <td align="center" style="background-color:#f6f6f6; padding:30px 20px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+                  <tr>
+                    <td align="center" style="padding:0 0 16px 0;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td style="padding:0 8px;">
+                            <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/arrow-right.svg" 
+                                 alt="Arrow" 
+                                 class="footer-arrow"
+                                 style="width:40px; height:40px; display:block; transform:rotate(180deg);" />
+                          </td>
+                          <td style="padding:0 8px;">
+                            <p style="font-family:'Plus Jakarta Sans',Arial,sans-serif; font-size:18px; font-weight:600; margin:0; color:#000000; white-space:nowrap;">
+                              DN ROBOCO.
+                            </p>
+                          </td>
+                          <td style="padding:0 8px;">
+                            <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/arrow-right.svg" 
+                                 alt="Arrow" 
+                                 class="footer-arrow"
+                                 style="width:40px; height:40px; display:block;" />
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="center">
+                      <img src="https://hyivuspmgvtunjrmykdp.supabase.co/storage/v1/object/public/email/footer_text.svg" 
+                           alt="Footer Text" 
+                           class="footer-text-img"
+                           style="width:100%; max-width:300px; height:auto; display:block; margin:0 auto;" />
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`
