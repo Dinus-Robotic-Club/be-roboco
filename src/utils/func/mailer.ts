@@ -14,7 +14,7 @@ export const sendResetPasswordEmail = async (email: string, resetLink: string) =
     try {
         const html = templateResetPassword(email, resetLink)
         const data = await resend.emails.send({
-            from: `DN ROBOCO <no-reply@saptogusty@gmail.com>`,
+            from: `DN ROBOCO <onboarding@resend.dev>`,
             to: email,
             subject: 'Reset password akun anda',
             html,
@@ -35,7 +35,7 @@ export const sendForgotPasswordEmail = async (email: string, forgotLink: string)
     try {
         const html = templateForgotPassword(email, forgotLink)
         const data = await resend.emails.send({
-            from: `DN ROBOCO <no-reply@saptogusty@gmail.com>`,
+            from: `DN ROBOCO <onboarding@resend.dev>`,
             to: email,
             subject: 'Reset password akun anda',
             html,
@@ -56,7 +56,7 @@ export const sendQrImage = async (email: string, QRCode: string, name: string, e
     try {
         const html = await templateSendQr(QRCode, name, expired)
         const data = await resend.emails.send({
-            from: `DN ROBOCO <no-reply@saptogusty@gmail.com>`,
+            from: `DN ROBOCO <onboarding@resend.dev>`,
             to: email,
             subject: 'QR PENDAFTARAN ANDA',
             html,
