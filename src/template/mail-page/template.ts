@@ -1,4 +1,4 @@
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3000'
+const BASE_URL = process.env.BASE_URL || 'https://be-roboco-production.up.railway.app/'
 
 export const templateResetPassword = (email: string, resetLink: string) =>
     `<!DOCTYPE html>
@@ -675,7 +675,7 @@ export const templateSendQr = async (qrCode: string, name: string, expiredAt: st
             <tr>
               <td align="center" style="padding:20px;">
                 <div style="background-color:#fbff00; display:inline-block; border-radius:10px; padding:20px;">
-                  <img src="${BASE_URL}/src/${qrCode}" alt="QR Code" style="width:200px; height:auto;" />
+                  <img src="${BASE_URL}/public/${qrCode}" alt="QR Code" style="width:200px; height:auto;" />
                 </div>
                 <p style="font-size:12px; font-style:italic; color:#555555; margin-top:8px;">Berlaku hingga ${expiredAt}</p>
               </td>

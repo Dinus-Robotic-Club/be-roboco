@@ -6,6 +6,7 @@ import morgan from 'morgan'
 import helmet from 'helmet'
 import { connectPrisma } from './config/prisma'
 import mainRoutes from './routes/main-routes'
+import path from 'path'
 
 const PORT = process.env.PORT || 3000
 
@@ -17,7 +18,7 @@ app.use(cors())
 app.use(express.json())
 app.use(morgan('dev'))
 app.use(helmet())
-app.use('/public', express.static('public'))
+app.use('/public', express.static(path.join(__dirname, '../public')))
 app.use('/qr', express.static('src/uploads/qrcode'))
 
 app.get('/', (_, res) => res.send('🚀 Server is running'))
