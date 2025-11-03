@@ -33,6 +33,13 @@ enum MatchStatus {
   CANCELLED
 }
 
+enum RegistrationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+}
+
 model User {
   uid       String   @id @default(uuid())
   email     String   @unique
@@ -41,29 +48,72 @@ model User {
   resetToken String? @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([uid])
+  @@index([email])
+  @@index([name])
 }
 
 model Participant {
  uid       String    @id @default(uuid())
  name      String 
  teamId    String
- image     String   
- role      RoleParticipant
+ image     String  
+ identityCardImage String 
+ roleInTeam RoleParticipant
  createdAt DateTime  @default(now())
  updatedAt DateTime  @updatedAt
  team     Team      @relation(fields: [teamId], references: [uid])
+
+ @@index([uid])
+ @@index([name])
+ @@index([teamId])
+ @@index([roleInTeam])
 }
 
 model Team {
   uid      String    @id @default(uuid())
-  name     String    
+  name     String
+  email    String    @unique    
   school   String
   password String
   twibbon  String
   invoice  String
-  resetToken String? @unique
-  participants Participant[]
   category  CompetitionCategory
+  resetToken String? @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  participants Participant[]
+  registrations Registration[]
+     
+
+  @@index([name])
+  @@index([school])
+  @@index([uid])
+  @@index([category])
+}
+
+
+model Registration {
+  uid       String   @id @default(uuid())
+  teamId    String   
+  qrToken   String?   @unique
+  qrUrl     String?
+  status    RegistrationStatus @default(PENDING)
+  registeredAt DateTime @default(now())
+  verifiedAt  DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  attendances Attendance?
+  team      Team     @relation(fields: [teamId], references: [uid])
+}
+
+model Attendance {
+  uid            String   @id @default(uuid())
+  registrationId String   @unique
+  isPresent      Boolean  @default(false)
+  scannedAt      DateTime?
+  scannedBy      String
+
+  registration Registration @relation(fields: [registrationId], references: [uid])
 }
