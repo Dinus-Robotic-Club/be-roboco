@@ -1,77 +1,71 @@
-import nodemailer from 'nodemailer'
+import { Resend } from 'resend'
 import { templateForgotPassword, templateResetPassword, templateSendQr } from '../../template/mail-page/template'
 import * as dotenv from 'dotenv'
-import path from 'path'
-
-const PUBLIC_PATH = path.resolve(__dirname, '../../public')
 
 dotenv.config()
 
-export const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
-    logger: true, // optional, untuk debug log
-    debug: true, // optional
-})
+// Inisialisasi Resend client
+const resend = new Resend(process.env.RESEND_API_KEY as string)
 
-// verify dulu biar tahu apakah transporter siap
-transporter.verify((error, success) => {
-    if (error) console.error('SMTP Error:', error)
-    else console.log('SMTP Ready:', success)
-})
-
+/**
+ * Kirim email reset password
+ */
 export const sendResetPasswordEmail = async (email: string, resetLink: string) => {
     try {
-        const info = await transporter.sendMail({
-            from: `"support" <${process.env.EMAIL_USER as string}>`,
+        const html = templateResetPassword(email, resetLink)
+        const data = await resend.emails.send({
+            from: `DN ROBOCO <no-reply@dnroboco.id>`,
             to: email,
             subject: 'Reset password akun anda',
-            html: templateResetPassword(email, resetLink),
+            html,
         })
 
-        console.log('Email terkirim ke : ', info.messageId)
-        return info
+        console.log('✅ Email reset password terkirim:', data)
+        return data
     } catch (error) {
-        console.error('Error send email : ', error)
+        console.error('❌ Error kirim email reset password:', error)
         throw error
     }
 }
 
+/**
+ * Kirim email lupa password
+ */
 export const sendForgotPasswordEmail = async (email: string, forgotLink: string) => {
     try {
-        const info = await transporter.sendMail({
-            from: `"support" <${process.env.EMAIL_USER as string}>`,
+        const html = templateForgotPassword(email, forgotLink)
+        const data = await resend.emails.send({
+            from: `DN ROBOCO <no-reply@dnroboco.id>`,
             to: email,
             subject: 'Reset password akun anda',
-            html: templateForgotPassword(email, forgotLink),
+            html,
         })
 
-        console.log('Email terkirim ke : ', info.messageId)
-        return info
+        console.log('✅ Email forgot password terkirim:', data)
+        return data
     } catch (error) {
-        console.error('Error send email : ', error)
+        console.error('❌ Error kirim email forgot password:', error)
         throw error
     }
 }
 
+/**
+ * Kirim QR code pendaftaran
+ */
 export const sendQrImage = async (email: string, QRCode: string, name: string, expired: string) => {
     try {
-        const info = await transporter.sendMail({
-            from: `"DN ROBOCO" <${process.env.EMAIL_USER as string}>`,
+        const html = await templateSendQr(QRCode, name, expired)
+        const data = await resend.emails.send({
+            from: `DN ROBOCO <no-reply@dnroboco.id>`,
             to: email,
             subject: 'QR PENDAFTARAN ANDA',
-            html: await templateSendQr(QRCode, name, expired),
+            html,
         })
 
-        console.log('Email terkirim ke : ', info.messageId)
-        return info
+        console.log('✅ Email QR code terkirim:', data)
+        return data
     } catch (error) {
-        console.error('Error send email : ', error)
+        console.error('❌ Error kirim email QR code:', error)
         throw error
     }
 }
