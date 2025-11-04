@@ -23,8 +23,8 @@ export const createTeamController = async (req: Request, res: Response) => {
 
         const roles = Array.isArray(body.participantsRoleInTeam) ? body.participantsRoleInTeam : [body.participantsRoleInTeam]
 
-        const images = getFilesByField('participantsImage').map((file, i) => saveImageToDisk(file, `participants`))
-        const idCards = getFilesByField('participantsIdentityCardImage').map((file, i) => saveImageToDisk(file, `id-card`))
+        const images = getFilesByField('participantsImage').map((file, i) => saveImageToDisk(file, `participants${i}`))
+        const idCards = getFilesByField('participantsIdentityCardImage').map((file, i) => saveImageToDisk(file, `id-card${i}`))
 
         const participants: ICreateParticipant[] = names.map((name: string, i: number) => ({
             name,
@@ -37,8 +37,8 @@ export const createTeamController = async (req: Request, res: Response) => {
             name: body.name,
             school: body.school,
             password: body.password,
-            twibbon,
-            invoice,
+            twibbon: twibbon,
+            invoice: invoice,
             category: body.category,
             email: body.email,
         }

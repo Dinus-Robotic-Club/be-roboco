@@ -73,7 +73,7 @@ model Participant {
 
 model Team {
   uid      String    @id @default(uuid())
-  name     String
+  name     String    @unique
   email    String    @unique    
   school   String
   password String

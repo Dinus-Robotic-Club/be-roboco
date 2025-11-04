@@ -19,7 +19,7 @@ app.use(express.json())
 app.use(morgan('dev'))
 app.use(helmet())
 app.use('/public', express.static(path.join(__dirname, '../public')))
-app.use('/qr', express.static('src/uploads/qrcode'))
+app.use('/qr', express.static('src/uploads/qrcode/'))
 
 app.get('/', (_, res) => res.send('🚀 Server is running'))
 app.use('/api', mainRoutes)

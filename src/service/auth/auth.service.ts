@@ -1,9 +1,10 @@
 import { generateResetToken, generateToken, verifyResetToken } from '../../utils/func/jwt'
 import { createUser, getUserByEmail, updatePasswordUser, updateResetTokenUser } from '../global/user.service'
 import { comparePassword } from '../../utils/func/global'
-import { ILoginUserInput, IRegisterUserInput, IResponseLogin } from '../../utils/types/auth'
+import { ILoginTeamInput, ILoginUserInput, IRegisterUserInput, IResponseLogin } from '../../utils/types/auth'
 import { sendForgotPasswordEmail } from '../../utils/func/mailer'
 import * as dotenv from 'dotenv'
+import { getTeamByName } from '../global/teams.service'
 
 dotenv.config()
 
@@ -23,28 +24,23 @@ export const registerService = async (data: IRegisterUserInput) => {
 }
 
 export const loginUser = async (data: ILoginUserInput): Promise<IResponseLogin> => {
-    try {
-        const user = await getUserByEmail(data.email)
+    const user = await getUserByEmail(data.email)
 
-        if (!user || !user.password) throw new Error('user not found or password not set!')
+    if (!user || !user.password) throw new Error('user not found or password not set!')
 
-        const isPasswordMatch = await comparePassword(data.password, user.password)
-        if (!isPasswordMatch) throw new Error('Invalid Password')
+    const isPasswordMatch = await comparePassword(data.password, user.password)
+    if (!isPasswordMatch) throw new Error('Invalid Password')
 
-        const payload = {
-            uid: user.uid,
-            email: user.email,
-            name: user.name,
-        }
+    const payload = {
+        uid: user.uid,
+        email: user.email,
+        name: user.name,
+    }
 
-        const token = generateToken(payload)
+    const token = generateToken(payload)
 
-        return {
-            access_token: token,
-        }
-    } catch (error) {
-        console.log(error)
-        throw new Error('Failed to login user')
+    return {
+        access_token: token,
     }
 }
 
@@ -79,4 +75,30 @@ export const resetPasswordService = async (newPassword: string, token: string) =
     })
 
     return
+}
+
+export const loginTeam = async (data: ILoginTeamInput): Promise<IResponseLogin> => {
+    try {
+        const user = await getTeamByName(data.username)
+
+        if (!user || !user.name) throw new Error('user not found or password not set!')
+
+        const isPasswordMatch = await comparePassword(data.password, user.name)
+        if (!isPasswordMatch) throw new Error('Invalid Password')
+
+        const payload = {
+            uid: user.uid,
+            email: user.email,
+            name: user.name,
+        }
+
+        const token = generateToken(payload)
+
+        return {
+            access_token: token,
+        }
+    } catch (error) {
+        console.log(error)
+        throw new Error('Failed to login user')
+    }
 }

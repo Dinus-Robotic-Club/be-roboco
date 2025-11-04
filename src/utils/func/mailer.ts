@@ -55,6 +55,7 @@ export const sendForgotPasswordEmail = async (email: string, forgotLink: string)
 export const sendQrImage = async (email: string, QRCode: string, name: string, expired: string) => {
     try {
         const html = await templateSendQr(QRCode, name, expired)
+        console.log(html)
         const data = await resend.emails.send({
             from: `DN ROBOCO <onboarding@resend.dev>`,
             to: email,

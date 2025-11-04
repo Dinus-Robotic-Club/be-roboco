@@ -19,8 +19,8 @@ export const loginUserController = async (req: Request, res: Response) => {
             token: response.access_token,
         })
     } catch (error) {
-        const errorMessage = (error as Error).message || 'Terjadi kesalahan saat login'
-        if (errorMessage.includes('user not found or password not set')) {
+        const errorMessage = (error as Error).message
+        if (errorMessage.includes('user not found or password not set!')) {
             sendResponse(res, StatusCode.NOT_FOUND, 'Pengguna tidak ditemukan atau password belum di set!')
             return
         } else if (errorMessage.includes('Invalid Password')) {
