@@ -2,9 +2,9 @@ import { Request, Response } from 'express'
 import { ICreateParticipant, ICreateTeam } from '../../utils/types/team'
 import { createTeamService, updateStatusRegistrationService } from '../../service/team/teams.service'
 import { sendResponse } from '../../utils/func/res'
-import { StatusCode } from '../../utils/types/types'
+import { ITokenPayload, StatusCode } from '../../utils/types/types'
 import { saveImageToDisk } from '../../utils/upload'
-import { getAllTeams, getTeamByUid } from '../../service/global/teams.service'
+import { getAllTeams, getProfileTeam, getTeamByUid } from '../../service/global/teams.service'
 
 export const createTeamController = async (req: Request, res: Response) => {
     try {
@@ -59,7 +59,7 @@ export const createTeamController = async (req: Request, res: Response) => {
     }
 }
 
-export const getAllTeamsController = async (req: Request, res: Response) => {
+export const getAllTeamsController = async (_: Request, res: Response) => {
     try {
         const teams = await getAllTeams()
         sendResponse(res, StatusCode.SUCCESS, 'Success', teams)
@@ -94,5 +94,30 @@ export const updateStatusRegistrationController = async (req: Request, res: Resp
 
         sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error!', error)
         return
+    }
+}
+
+export const getProfileTeamController = async (req: Request, res: Response) => {
+    try {
+        const { uid } = req.user as ITokenPayload
+
+        if (!uid) {
+            sendResponse(res, StatusCode.BAD_REQUEST, 'Missing uid!')
+            return
+        }
+
+        const data = await getProfileTeam(uid)
+
+        if (!data) {
+            sendResponse(res, StatusCode.BAD_REQUEST, 'Failed get profile team!')
+            return
+        }
+
+        sendResponse(res, StatusCode.SUCCESS, 'Succes get profile team!', data)
+    } catch (error) {
+        const errMessage = (error as Error).message
+        sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error!')
+        console.log(error)
+        console.log(errMessage)
     }
 }

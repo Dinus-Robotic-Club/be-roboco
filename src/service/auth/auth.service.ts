@@ -78,27 +78,24 @@ export const resetPasswordService = async (newPassword: string, token: string) =
 }
 
 export const loginTeam = async (data: ILoginTeamInput): Promise<IResponseLogin> => {
-    try {
-        const user = await getTeamByName(data.username)
+    const user = await getTeamByName(data.name)
 
-        if (!user || !user.name) throw new Error('user not found or password not set!')
+    console.log(user)
 
-        const isPasswordMatch = await comparePassword(data.password, user.name)
-        if (!isPasswordMatch) throw new Error('Invalid Password')
+    if (!user || !user.name) throw new Error('user not found or password not set!')
 
-        const payload = {
-            uid: user.uid,
-            email: user.email,
-            name: user.name,
-        }
+    const isPasswordMatch = await comparePassword(data.password, user.password)
+    if (!isPasswordMatch) throw new Error('Invalid Password')
 
-        const token = generateToken(payload)
+    const payload = {
+        uid: user.uid,
+        email: user.email,
+        name: user.name,
+    }
 
-        return {
-            access_token: token,
-        }
-    } catch (error) {
-        console.log(error)
-        throw new Error('Failed to login user')
+    const token = generateToken(payload)
+
+    return {
+        access_token: token,
     }
 }

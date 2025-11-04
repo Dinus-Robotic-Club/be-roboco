@@ -1,5 +1,5 @@
 import { prisma } from '../../config/prisma'
-import { decodeQrToken } from '../../utils/func/global'
+import { decodeQrToken, hashPassword } from '../../utils/func/global'
 import { ICreateParticipant, IReqBodyCreateTeam, RegistrationStatus } from '../../utils/types/team'
 
 export const getTeamByName = async (name: string) => {
@@ -14,10 +14,13 @@ export const createTeam = async (data: IReqBodyCreateTeam) => {
     let team, registration
     let participants: ICreateParticipant[] = []
 
+    const hashPass = await hashPassword(data.team.password)
+
     await prisma.$transaction(async (tx) => {
         team = await tx.team.create({
             data: {
                 ...data.team,
+                password: hashPass,
             },
         })
 
@@ -180,5 +183,35 @@ export const createAttendenceWithScan = async (token: string, adminId: string) =
         })
 
         return attendance
+    })
+}
+
+export const getProfileTeam = async (uid: string) => {
+    return await prisma.team.findUnique({
+        where: {
+            uid: uid,
+        },
+        select: {
+            uid: true,
+            email: true,
+            twibbon: true,
+            name: true,
+            school: true,
+            category: true,
+            participants: {
+                select: {
+                    uid: true,
+                    name: true,
+                    roleInTeam: true,
+                    image: true,
+                },
+            },
+            registrations: {
+                select: {
+                    uid: true,
+                    qrUrl: true,
+                },
+            },
+        },
     })
 }
