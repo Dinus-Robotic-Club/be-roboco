@@ -76,6 +76,7 @@ model Team {
   name     String    @unique
   email    String    @unique    
   school   String
+  logo     String?
   password String
   twibbon  String
   invoice  String
@@ -86,6 +87,12 @@ model Team {
   participants Participant[]
   registrations Registration[]
      
+  matchesA    Match[]     @relation("TeamA")
+  matchesB    Match[]     @relation("TeamB")
+  Group       GroupTeam[]
+  winnerId    MatchRound[]
+  winner      Match[]
+
 
   @@index([name])
   @@index([school])
@@ -97,6 +104,7 @@ model Team {
 model Registration {
   uid       String   @id @default(uuid())
   teamId    String   
+  tournamentId String?
   qrToken   String?   @unique
   qrUrl     String?
   status    RegistrationStatus @default(PENDING)
@@ -106,6 +114,8 @@ model Registration {
   updatedAt DateTime @updatedAt
   attendances Attendance?
   team      Team     @relation(fields: [teamId], references: [uid])
+
+  tournament   Tournament? @relation(fields: [tournamentId], references: [uid])
 }
 
 model Attendance {
@@ -116,4 +126,141 @@ model Attendance {
   scannedBy      String
 
   registration Registration @relation(fields: [registrationId], references: [uid])
+
+  @@index([scannedBy])
 }
+
+model Tournament{
+  uid           String    @id @default(uuid())
+  registrationsId String?
+  groupsId      String?
+  bracketsId    String?
+  matchId       String?
+  name          String    
+  slug          String    @unique
+  description   String?
+  startDate     DateTime
+  endDate       DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+
+  settings      Setting?
+  groups        Group[]
+  brackets      Bracket[]
+  registrations Registration[]
+  match         Match[]
+
+  @@index([uid])
+  @@index([name])
+  @@index([slug])
+}
+
+model Match {
+  uid           String  @id @default(uuid())
+  tournamentId  String
+  groupId       String?  //jika berada di group stage
+  bracketId     String?  //jika berada di bracket stage/playoff
+  teamAId       String   
+  teamBId       String   
+  bestOf        Int     @default(3)
+  scoreA        Int     @default(0)
+  scoreB        Int     @default(0)
+  winnerId      String? 
+  status        MatchStatus  @default(PENDING)
+  roundLabel    String?   
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  tournament  Tournament @relation(fields: [tournamentId], references: [uid])
+  group       Group?   @relation(fields: [groupId], references: [uid])
+  bracket     Bracket?   @relation(fields: [bracketId], references: [uid])
+  teamA       Team       @relation("TeamA", fields: [teamAId], references: [uid])
+  teamB       Team       @relation("TeamB", fields: [teamBId], references: [uid])
+  winner      Team?      @relation(fields: [winnerId], references: [uid])
+  rounds      MatchRound[]
+
+
+  @@index([uid])
+  @@index([tournamentId])
+  @@index([groupId])
+  @@index([bracketId])
+  @@index([bestOf])
+  @@index([roundLabel])
+  @@index([status])
+  @@index([winnerId])
+}
+
+model MatchRound {
+  uid          String  @id @default(uuid())
+  matchId     String
+  roundNumber Int
+  winnerId    String?
+  scoreDetail String? // menampilkan score "10-7" 
+  createdAt   DateTime @default(now())
+
+  match       Match   @relation(fields: [matchId], references: [uid])
+  winner      Team?   @relation(fields: [winnerId], references: [uid])
+
+  @@unique([matchId, roundNumber])
+}
+
+model Setting {
+  uid            String   @id @default(uuid())
+  tournamentId  String   @unique
+  defaultBestOf Int      @default(3)
+  groupBestOf   Int      @default(1)
+  upperBestOf   Int      @default(3)
+  lowerBestOf   Int      @default(3)
+  grandFinalBO  Int      @default(5)
+  createdAt     DateTime @default(now())
+
+  tournament    Tournament @relation(fields: [tournamentId], references: [uid])
+}
+
+model Group {
+  uid        String      @id @default(uuid())
+  tournamentId String
+  name      String
+  round     Int         @default(1)
+  createdAt DateTime    @default(now())
+
+  tournament Tournament  @relation(fields: [tournamentId], references: [uid])
+  teams     GroupTeam[]
+  matches   Match[]
+}
+
+model GroupTeam {
+  uid      String @id @default(uuid())
+  groupId String  @unique
+  teamId  String  @unique
+  seed    Int?   // optional seed/order within group
+
+  group   Group @relation(fields: [groupId], references: [uid])
+  team    Team    @relation(fields: [teamId], references: [uid])
+
+  @@unique([groupId, teamId])
+}
+
+model Bracket {
+  uid           String      @id @default(uuid())
+  tournamentId String
+  type         BracketType
+  round        Int         // bracket round number (1,2,3...)
+  name         String?     // optional label
+  createdAt    DateTime    @default(now())
+
+  tournament   Tournament  @relation(fields: [tournamentId], references: [uid])
+  matches      Match[]
+}
+
+// model SystemLog {
+//   uid        String   @id @default(uuid())
+//   userId    String?
+//   action    String
+//   meta      String?   // optional JSON string for extra data
+//   createdAt DateTime  @default(now())
+
+//   // optional relation
+//   user      User?     @relation(fields: [userId], references: [uid])
+// }

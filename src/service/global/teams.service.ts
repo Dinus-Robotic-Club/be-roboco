@@ -194,10 +194,10 @@ export const getProfileTeam = async (uid: string) => {
         select: {
             uid: true,
             email: true,
-            twibbon: true,
             name: true,
             school: true,
             category: true,
+            twibbon: true,
             participants: {
                 select: {
                     uid: true,
@@ -215,3 +215,4 @@ export const getProfileTeam = async (uid: string) => {
         },
     })
 }
+

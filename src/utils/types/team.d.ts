@@ -27,6 +27,7 @@ export interface ICreateTeam {
     email: string
     twibbon: string
     invoice: string
+    logo?: string
     category: CompetitionCategory
 }
 

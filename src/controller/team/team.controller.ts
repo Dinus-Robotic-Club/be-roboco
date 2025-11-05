@@ -5,6 +5,7 @@ import { sendResponse } from '../../utils/func/res'
 import { ITokenPayload, StatusCode } from '../../utils/types/types'
 import { saveImageToDisk } from '../../utils/upload'
 import { getAllTeams, getProfileTeam, getTeamByUid } from '../../service/global/teams.service'
+import { log } from 'console'
 
 export const createTeamController = async (req: Request, res: Response) => {
     try {
@@ -18,6 +19,7 @@ export const createTeamController = async (req: Request, res: Response) => {
 
         const twibbon = saveImageToDisk(getFilesByField('twibbon')[0], 'twibbon')
         const invoice = saveImageToDisk(getFilesByField('invoice')[0], 'invoice')
+        const logo = saveImageToDisk(getFilesByField('logo')[0], 'logo')
 
         const names = Array.isArray(body.participantsName) ? body.participantsName : [body.participantsName]
 
@@ -41,6 +43,7 @@ export const createTeamController = async (req: Request, res: Response) => {
             invoice: invoice,
             category: body.category,
             email: body.email,
+            logo: logo,
         }
 
         console.log('participants : ', participants)
