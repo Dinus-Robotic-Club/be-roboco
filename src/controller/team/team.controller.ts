@@ -5,15 +5,11 @@ import { sendResponse } from '../../utils/func/res'
 import { ITokenPayload, StatusCode } from '../../utils/types/types'
 import { saveImageToDisk } from '../../utils/upload'
 import { getAllTeams, getProfileTeam, getTeamByUid } from '../../service/global/teams.service'
-import { log } from 'console'
 
 export const createTeamController = async (req: Request, res: Response) => {
     try {
         const body = req.body
         const files = req.files as Express.Multer.File[]
-
-        console.log('body : ', body)
-        console.log('files : ', files)
 
         const getFilesByField = (field: string) => files.filter((f) => f.fieldname.includes(field))
 
@@ -22,7 +18,6 @@ export const createTeamController = async (req: Request, res: Response) => {
         const logo = saveImageToDisk(getFilesByField('logo')[0], 'logo')
 
         const names = Array.isArray(body.participantsName) ? body.participantsName : [body.participantsName]
-
         const roles = Array.isArray(body.participantsRoleInTeam) ? body.participantsRoleInTeam : [body.participantsRoleInTeam]
 
         const images = getFilesByField('participantsImage').map((file, i) => saveImageToDisk(file, `participants${i}`))
@@ -46,10 +41,7 @@ export const createTeamController = async (req: Request, res: Response) => {
             logo: logo,
         }
 
-        console.log('participants : ', participants)
-        console.log('team : ', team)
-
-        const createdTeam = await createTeamService({ team, participants })
+        const createdTeam = await createTeamService({ team, participants }, body.tournamentId)
 
         sendResponse(res, StatusCode.CREATED, 'Team Created', createdTeam)
     } catch (error) {

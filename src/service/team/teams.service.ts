@@ -3,11 +3,11 @@ import { createTeam, getTeamByName, updateStatusRegistrationTeam } from '../glob
 import { dateToString, generateQrImage, generateQrToken } from '../../utils/func/global'
 import { sendQrImage } from '../../utils/func/mailer'
 
-export const createTeamService = async (data: IReqBodyCreateTeam) => {
+export const createTeamService = async (data: IReqBodyCreateTeam, tourId: string) => {
     const existTeam = await getTeamByName(data.team.name)
     if (existTeam) throw new Error('Team Name Exist')
 
-    const team = await createTeam(data)
+    const team = await createTeam(data, tourId)
     return team
 }
 

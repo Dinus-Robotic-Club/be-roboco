@@ -49,9 +49,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([uid])
-  @@index([email])
-  @@index([name])
+  @@index([uid, email, name])
 }
 
 model Participant {
@@ -65,10 +63,7 @@ model Participant {
  updatedAt DateTime  @updatedAt
  team     Team      @relation(fields: [teamId], references: [uid])
 
- @@index([uid])
- @@index([name])
- @@index([teamId])
- @@index([roleInTeam])
+ @@index([uid, name, teamId, roleInTeam])
 }
 
 model Team {
@@ -94,10 +89,7 @@ model Team {
   winner      Match[]
 
 
-  @@index([name])
-  @@index([school])
-  @@index([uid])
-  @@index([category])
+  @@index([name, school, uid, category])
 }
 
 
@@ -116,6 +108,8 @@ model Registration {
   team      Team     @relation(fields: [teamId], references: [uid])
 
   tournament   Tournament? @relation(fields: [tournamentId], references: [uid])
+
+  @@index([uid, teamId, tournamentId, status])
 }
 
 model Attendance {
@@ -132,10 +126,6 @@ model Attendance {
 
 model Tournament{
   uid           String    @id @default(uuid())
-  registrationsId String?
-  groupsId      String?
-  bracketsId    String?
-  matchId       String?
   name          String    
   slug          String    @unique
   description   String?
@@ -151,9 +141,7 @@ model Tournament{
   registrations Registration[]
   match         Match[]
 
-  @@index([uid])
-  @@index([name])
-  @@index([slug])
+  @@index([uid, name, slug])
 }
 
 model Match {
@@ -181,14 +169,7 @@ model Match {
   rounds      MatchRound[]
 
 
-  @@index([uid])
-  @@index([tournamentId])
-  @@index([groupId])
-  @@index([bracketId])
-  @@index([bestOf])
-  @@index([roundLabel])
-  @@index([status])
-  @@index([winnerId])
+  @@index([uid, tournamentId, groupId, bracketId, bestOf, roundLabel, status, winnerId])
 }
 
 model MatchRound {
@@ -232,11 +213,11 @@ model Group {
 
 model GroupTeam {
   uid      String @id @default(uuid())
-  groupId String  @unique
-  teamId  String  @unique
+  groupId String   
+  teamId  String  
   seed    Int?   // optional seed/order within group
 
-  group   Group @relation(fields: [groupId], references: [uid])
+  group   Group   @relation(fields: [groupId], references: [uid])
   team    Team    @relation(fields: [teamId], references: [uid])
 
   @@unique([groupId, teamId])

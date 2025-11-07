@@ -7,7 +7,8 @@ import helmet from 'helmet'
 import { connectPrisma } from './config/prisma'
 import mainRoutes from './routes/main-routes'
 import path from 'path'
-
+import http from 'http'
+import { setupSocket } from './service/socket/socket.service'
 const PORT = process.env.PORT || 3000
 
 dotenv.config()
@@ -21,12 +22,16 @@ app.use(helmet())
 app.use('/public', express.static(path.join(__dirname, '../public')))
 app.use('/qr', express.static('src/uploads/qrcode/'))
 
+const server = http.createServer(app)
+
+setupSocket(server)
+
 app.get('/', (_, res) => res.send('🚀 Server is running'))
 app.use('/api', mainRoutes)
 
 connectPrisma()
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server Running on port ${PORT}`)
 })
 

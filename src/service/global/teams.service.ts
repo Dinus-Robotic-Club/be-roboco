@@ -10,7 +10,7 @@ export const getTeamByName = async (name: string) => {
     })
 }
 
-export const createTeam = async (data: IReqBodyCreateTeam) => {
+export const createTeam = async (data: IReqBodyCreateTeam, tourId: string) => {
     let team, registration
     let participants: ICreateParticipant[] = []
 
@@ -40,6 +40,7 @@ export const createTeam = async (data: IReqBodyCreateTeam) => {
             data: {
                 teamId: team.uid,
                 status: 'PENDING',
+                tournamentId: tourId
             },
         })
     })
