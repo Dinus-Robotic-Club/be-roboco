@@ -1,6 +1,6 @@
-import { prisma } from '../../config/prisma'
-import { ICreateTournament, IUpdateSetting, IUpdateTournament } from '../../utils/types/tour'
-import { emitToTournament, io } from '../socket/socket.service'
+import { prisma } from './../config/prisma'
+import { ICreateTournament, IUpdateSetting, IUpdateTournament } from '../utils/types/tour'
+import { emitToTournament, io } from './socket.service'
 
 export const createTournamentService = async (data: ICreateTournament) => {
     return await prisma.$transaction(async (tx) => {
@@ -11,6 +11,8 @@ export const createTournamentService = async (data: ICreateTournament) => {
                 description: data.description ? data.description : null,
                 startDate: new Date(data.startDate),
                 endDate: data.endDate ? new Date(data.endDate) : null,
+                stageType: data.stageType,
+                playoffType: data.playoffType,
             },
         })
 
@@ -21,7 +23,7 @@ export const createTournamentService = async (data: ICreateTournament) => {
                 groupBestOf: 3,
                 upperBestOf: 3,
                 lowerBestOf: 3,
-                grandFinalBO: 3,
+                grandFinalBestOf: 3,
             },
         })
 
@@ -82,12 +84,20 @@ export const getDetailTournamentBySlugService = async (slug: string) => {
                 select: {
                     uid: true,
                     name: true,
-                    round: true,
+                    teams: {
+                        select: {
+                            team: {
+                                select: {
+                                    name: true,
+                                },
+                            },
+                        },
+                    },
                 },
             },
-            match: true,
             settings: true,
             brackets: true,
+            matches: true,
         },
     })
 }

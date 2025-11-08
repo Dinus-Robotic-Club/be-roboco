@@ -1,7 +1,7 @@
-import { IReqBodyCreateTeam, RegistrationStatus } from '../../utils/types/team'
-import { createTeam, getTeamByName, updateStatusRegistrationTeam } from '../global/teams.service'
-import { dateToString, generateQrImage, generateQrToken } from '../../utils/func/global'
-import { sendQrImage } from '../../utils/func/mailer'
+import { IReqBodyCreateTeam, RegistrationStatus } from '../utils/types/team'
+import { createTeam, getTeamByName, updateStatusRegistrationTeam } from './global/teams.service'
+import { dateToString, generateQrImage, generateQrToken } from '../utils/func/global'
+import { sendQrImage } from '../utils/func/mailer'
 
 export const createTeamService = async (data: IReqBodyCreateTeam, tourId: string) => {
     const existTeam = await getTeamByName(data.team.name)

@@ -1,21 +1,15 @@
 import { Request, Response } from 'express'
-import { sendResponse } from '../../utils/func/res'
-import { StatusCode } from '../../utils/types/types'
-import { ICreateTournament, IUpdateTournament } from '../../utils/types/tour'
-import {
-    createTournamentService,
-    deleteTournamentService,
-    getAllTournamentService,
-    getDetailTournamentBySlugService,
-    updateTournamentService,
-} from '../../service/tournament/tournament.service'
+import { sendResponse } from '../utils/func/res'
+import { StatusCode } from '../utils/types/types'
+import { ICreateTournament, IUpdateTournament } from '../utils/types/tour'
+import { createTournamentService, deleteTournamentService, getAllTournamentService, getDetailTournamentBySlugService, updateTournamentService } from '../service/tournament.service'
 
 export const createTournamentController = async (req: Request, res: Response) => {
     try {
         const { data }: { data: ICreateTournament } = req.body
 
-        if (!data || !data.name || !data.slug || !data.startDate) {
-            sendResponse(res, StatusCode.BAD_REQUEST, 'Missing field!')
+        if (!data || !data.name || !data.slug || !data.startDate || !data.playoffType || !data.stageType) {
+            sendResponse(res, StatusCode.BAD_REQUEST, `Missing field : Name, Slug, StartDate, playoffType, stageType`)
             return
         }
 

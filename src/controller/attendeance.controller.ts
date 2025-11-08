@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
-import { sendResponse } from '../../utils/func/res'
-import { StatusCode } from '../../utils/types/types'
-import { createAttendeanceService } from '../../service/attendeance/attendeance.service'
+import { sendResponse } from '../utils/func/res'
+import { StatusCode } from '../utils/types/types'
+import { createAttendeanceService } from '../service/attendeance.service'
 
 export const createAttendeanceController = async (req: Request, res: Response) => {
     try {

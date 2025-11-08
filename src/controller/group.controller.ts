@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
-import { sendResponse } from '../../utils/func/res'
-import { StatusCode } from '../../utils/types/types'
-import { createGroupService } from '../../service/group/group.service'
+import { sendResponse } from '../utils/func/res'
+import { StatusCode } from '../utils/types/types'
+import { createGroupService } from '../service/group.service'
 
 export const createGroupController = async (req: Request, res: Response) => {
     try {

@@ -4,6 +4,8 @@ export interface ICreateTournament {
     description?: string
     startDate: DateTime
     endDate?: DateTime
+    stageType: 'SINGLE_STAGE' | 'DOUBLE_STAGE'
+    playoffType: 'SINGLE_ELIM' | 'DOUBLE_ELIM'
 }
 
 export type IUpdateTournament = Partial<Omit<ICreateTournament, 'slug'>>

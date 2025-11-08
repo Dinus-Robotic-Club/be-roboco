@@ -5,8 +5,8 @@ import {
     getALlTournamentsController,
     getDetailTournamentController,
     updateTournamentController,
-} from '../../controller/tournament/tournament.controller'
-import authMiddleware from '../../middleware/auth.middleware'
+} from '../controller/tournament.controller'
+import authMiddleware from '../middleware/auth.middleware'
 
 const router = Router()
 

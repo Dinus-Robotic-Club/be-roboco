@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { sendResponse } from '../../utils/func/res'
-import { loginTeam, loginUser } from '../../service/auth/auth.service'
+import { loginTeam, loginUser } from '../../service/auth.service'
 import { StatusCode } from '../../utils/types/types'
 import { ILoginTeamInput, ILoginUserInput } from '../../utils/types/auth'
 

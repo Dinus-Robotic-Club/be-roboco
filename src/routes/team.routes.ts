@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { createTeamController, getAllTeamsController, getProfileTeamController, updateStatusRegistrationController } from '../../controller/team/team.controller'
-import { uploadTeamImage } from '../../utils/upload'
-import authMiddleware from '../../middleware/auth.middleware'
+import { createTeamController, getAllTeamsController, getProfileTeamController, updateStatusRegistrationController } from '../controller/team.controller'
+import authMiddleware from '../middleware/auth.middleware'
+import { uploadTeamImage } from '../utils/upload'
 
 const router = Router()
 

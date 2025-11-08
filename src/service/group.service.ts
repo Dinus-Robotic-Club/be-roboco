@@ -1,13 +1,6 @@
-import { prisma } from '../../config/prisma'
-import { emitToTournament } from '../socket/socket.service'
-
-interface ICreatedGroups {
-    name: string
-    uid: string
-    createdAt: Date
-    tournamentId: string
-    round: number
-}
+import { prisma } from '../config/prisma'
+import { ICreatedGroups } from '../utils/types/group'
+import { emitToTournament } from './socket.service'
 
 export const createGroupService = async (tourId: string) => {
     const result = await prisma.$transaction(async (tx) => {
@@ -28,7 +21,10 @@ export const createGroupService = async (tourId: string) => {
         const createdGroups: ICreatedGroups[] = []
         for (let i = 0; i < groupCount; i++) {
             const g = await tx.group.create({
-                data: { tournamentId: tourId, name: `Group ${String.fromCharCode(65 + i)}` },
+                data: {
+                    tournamentId: tourId,
+                    name: `Group ${String.fromCharCode(65 + i)}`,
+                },
             })
             createdGroups.push(g)
         }

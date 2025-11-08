@@ -8,7 +8,7 @@ import { connectPrisma } from './config/prisma'
 import mainRoutes from './routes/main-routes'
 import path from 'path'
 import http from 'http'
-import { setupSocket } from './service/socket/socket.service'
+import { setupSocket } from './service/socket.service'
 const PORT = process.env.PORT || 3000
 
 dotenv.config()

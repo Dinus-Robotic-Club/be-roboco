@@ -1,10 +1,10 @@
 import { Request, Response } from 'express'
-import { ICreateParticipant, ICreateTeam } from '../../utils/types/team'
-import { createTeamService, updateStatusRegistrationService } from '../../service/team/teams.service'
-import { sendResponse } from '../../utils/func/res'
-import { ITokenPayload, StatusCode } from '../../utils/types/types'
-import { saveImageToDisk } from '../../utils/upload'
-import { getAllTeams, getProfileTeam, getTeamByUid } from '../../service/global/teams.service'
+import { ICreateParticipant, ICreateTeam } from '../utils/types/team'
+import { createTeamService, updateStatusRegistrationService } from '../service/teams.service'
+import { sendResponse } from '../utils/func/res'
+import { ITokenPayload, StatusCode } from '../utils/types/types'
+import { saveImageToDisk } from '../utils/upload'
+import { getAllTeams, getProfileTeam, getTeamByUid } from '../service/global/teams.service'
 
 export const createTeamController = async (req: Request, res: Response) => {
     try {
@@ -34,14 +34,13 @@ export const createTeamController = async (req: Request, res: Response) => {
             name: body.name,
             school: body.school,
             password: body.password,
-            twibbon: twibbon,
-            invoice: invoice,
+
             category: body.category,
             email: body.email,
             logo: logo,
         }
 
-        const createdTeam = await createTeamService({ team, participants }, body.tournamentId)
+        const createdTeam = await createTeamService({ team, participants, twibbon, invoice }, body.tournamentId)
 
         sendResponse(res, StatusCode.CREATED, 'Team Created', createdTeam)
     } catch (error) {

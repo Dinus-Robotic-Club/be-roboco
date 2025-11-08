@@ -1,10 +1,10 @@
-import { generateResetToken, generateToken, verifyResetToken } from '../../utils/func/jwt'
-import { createUser, getUserByEmail, updatePasswordUser, updateResetTokenUser } from '../global/user.service'
-import { comparePassword } from '../../utils/func/global'
-import { ILoginTeamInput, ILoginUserInput, IRegisterUserInput, IResponseLogin } from '../../utils/types/auth'
-import { sendForgotPasswordEmail } from '../../utils/func/mailer'
+import { generateResetToken, generateToken, verifyResetToken } from '../utils/func/jwt'
+import { createUser, getUserByEmail, updatePasswordUser, updateResetTokenUser } from './global/user.service'
+import { comparePassword } from '../utils/func/global'
+import { ILoginTeamInput, ILoginUserInput, IRegisterUserInput, IResponseLogin } from './../utils/types/auth'
+import { sendForgotPasswordEmail } from '../utils/func/mailer'
 import * as dotenv from 'dotenv'
-import { getTeamByName } from '../global/teams.service'
+import { getTeamByName } from './global/teams.service'
 
 dotenv.config()
 

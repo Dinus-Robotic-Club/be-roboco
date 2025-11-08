@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import { loginTeamController, loginUserController } from '../../controller/auth/login.controller'
-import { registerUserController } from '../../controller/auth/register.controller'
-import { forgotPasswordController } from '../../controller/auth/forgot.controller'
-import { resetPasswordController } from '../../controller/auth/reset.controller'
+import { loginTeamController, loginUserController } from '../controller/auth/login.controller'
+import { registerUserController } from '../controller/auth/register.controller'
+import { forgotPasswordController } from '../controller/auth/forgot.controller'
+import { resetPasswordController } from '../controller/auth/reset.controller'
 
 // import authMiddleware from '../../middlewares/middleware'
 

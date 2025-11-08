@@ -40,7 +40,9 @@ export const createTeam = async (data: IReqBodyCreateTeam, tourId: string) => {
             data: {
                 teamId: team.uid,
                 status: 'PENDING',
-                tournamentId: tourId
+                tournamentId: tourId,
+                twibbon: data.twibbon,
+                invoice: data.invoice,
             },
         })
     })
@@ -54,8 +56,6 @@ export const getAllTeams = async () => {
             uid: true,
             name: true,
             school: true,
-            invoice: true,
-            twibbon: true,
             category: true,
             email: true,
             participants: {
@@ -75,9 +75,11 @@ export const getAllTeams = async () => {
                     qrToken: true,
                     qrUrl: true,
                     status: true,
+                    invoice: true,
+                    twibbon: true,
                     registeredAt: true,
                     verifiedAt: true,
-                    attendances: {
+                    attendance: {
                         select: {
                             uid: true,
                             registrationId: true,
@@ -137,56 +139,6 @@ export const getTeamByUid = async (uid: string) => {
     })
 }
 
-export const createAttendenceWithScan = async (token: string, adminId: string) => {
-    const decodeToken = decodeQrToken(token)
-    if (!decodeToken) throw new Error('Failed decode token!')
-
-    await prisma.$transaction(async (tx) => {
-        const team = await tx.team.findUnique({
-            where: { uid: decodeToken.teamId },
-            include: { registrations: true },
-        })
-
-        if (!team || team.registrations.length === 0) {
-            throw new Error('Team or registration not found')
-        }
-
-        const registration = team.registrations[0]
-
-        const existingAttendance = await tx.attendance.findUnique({
-            where: { registrationId: registration.uid },
-        })
-
-        let attendance
-        if (existingAttendance) {
-            attendance = await tx.attendance.update({
-                where: { registrationId: registration.uid },
-                data: {
-                    scannedBy: adminId,
-                    isPresent: true,
-                    scannedAt: new Date(),
-                },
-            })
-        } else {
-            attendance = await tx.attendance.create({
-                data: {
-                    registrationId: registration.uid,
-                    scannedBy: adminId,
-                    isPresent: true,
-                    scannedAt: new Date(),
-                },
-            })
-        }
-
-        await tx.registration.update({
-            where: { uid: registration.uid },
-            data: { qrToken: null, qrUrl: null },
-        })
-
-        return attendance
-    })
-}
-
 export const getProfileTeam = async (uid: string) => {
     return await prisma.team.findUnique({
         where: {
@@ -198,7 +150,6 @@ export const getProfileTeam = async (uid: string) => {
             name: true,
             school: true,
             category: true,
-            twibbon: true,
             participants: {
                 select: {
                     uid: true,
@@ -211,9 +162,9 @@ export const getProfileTeam = async (uid: string) => {
                 select: {
                     uid: true,
                     qrUrl: true,
+                    twibbon: true,
                 },
             },
         },
     })
 }
-

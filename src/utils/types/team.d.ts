@@ -1,6 +1,8 @@
 export interface IReqBodyCreateTeam {
     team: ICreateTeam
     participants: ICreateParticipant[]
+    twibbon: string
+    invoice: string
 }
 
 export enum CompetitionCategory {
@@ -25,8 +27,6 @@ export interface ICreateTeam {
     school: string
     password: string
     email: string
-    twibbon: string
-    invoice: string
     logo?: string
     category: CompetitionCategory
 }
@@ -44,4 +44,20 @@ export interface ICreateRegistration {
     qrUrl: string
     status: RegistrationStatus
     registeredAt: DateTime
+}
+
+export interface IResponseTeams {
+    uid: string
+    groupId: string
+    teamId: string
+    team: IResponseTeamOnTeams
+}
+
+export interface IResponseTeamOnTeams {
+    uid: string
+    name: string
+    email: string
+    logo: string
+    school: string
+    category: CompetitionCategory
 }

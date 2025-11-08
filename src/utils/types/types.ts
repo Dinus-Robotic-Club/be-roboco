@@ -15,6 +15,14 @@ export enum StatusCode {
     INTERNAL_ERROR = 500,
 }
 
+export enum MatchStatus {
+    PENDING = 'PENDING',
+    SCHEDULED = 'SCHEDULED',
+    ONGOING = 'ONGOING',
+    FINISHED = 'FINISHED',
+    CANCELLED = 'CANCELLED',
+}
+
 export interface IApiResponse<T> {
     success: boolean
     status: StatusCode

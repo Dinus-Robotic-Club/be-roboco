@@ -1,8 +1,9 @@
-import authRoutes from './auth/auth.routes'
-import participantRoutes from '../routes/team/team.routes'
-import attendeanceRoutes from '../routes/attendeance/attendeance.routes'
-import tournamentRoutes from '../routes/tournament/tour.routes'
-import groupRoutes from '../routes/group/group.routes'
+import authRoutes from './auth.routes'
+import participantRoutes from '../routes/team.routes'
+import attendeanceRoutes from './attendeance.routes'
+import tournamentRoutes from './tour.routes'
+import groupRoutes from '../routes/group.routes'
+import matchRoutes from '../routes/match.routes'
 
 export const routes = [
     {
@@ -28,6 +29,11 @@ export const routes = [
     {
         path: '/groups',
         router: groupRoutes,
+        middleware: [],
+    },
+    {
+        path: '/matches',
+        router: matchRoutes,
         middleware: [],
     },
 ]

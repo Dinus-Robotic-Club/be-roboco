@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { sendResponse } from '../../utils/func/res'
-import { registerService } from '../../service/auth/auth.service'
+import { registerService } from '../../service/auth.service'
 import { StatusCode } from '../../utils/types/types'
 import { IRegisterUserInput } from '../../utils/types/auth'
 
