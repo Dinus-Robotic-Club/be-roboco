@@ -3,6 +3,8 @@ import { ICreatedGroups } from '../utils/types/group'
 import { emitToTournament } from './socket.service'
 
 export const createGroupService = async (tourId: string) => {
+    const groupSize = 4
+
     const result = await prisma.$transaction(async (tx) => {
         const registrations = await tx.registration.findMany({
             where: { tournamentId: tourId, status: 'APPROVED' },
@@ -10,50 +12,68 @@ export const createGroupService = async (tourId: string) => {
             orderBy: { registeredAt: 'desc' },
         })
 
-        if (!registrations.length) throw new Error('No teams approved')
+        if (!registrations.length) throw new Error('No approved teams found')
 
-        const teams = registrations.map((r) => r.team)
-        const totalTeams = teams.length
-        const groupSize = 4
-        const groupCount = Math.floor(totalTeams / groupSize)
-        const remainder = totalTeams % groupSize
+        const teamsByCategory = registrations.reduce<Record<string, any[]>>((acc, r) => {
+            const category = r.team.category
+            if (!acc[category]) acc[category] = []
+            acc[category].push(r.team)
+            return acc
+        }, {})
 
         const createdGroups: ICreatedGroups[] = []
-        for (let i = 0; i < groupCount; i++) {
-            const g = await tx.group.create({
-                data: {
-                    tournamentId: tourId,
-                    name: `Group ${String.fromCharCode(65 + i)}`,
-                },
-            })
-            createdGroups.push(g)
-        }
 
-        let index = 0
-        for (let i = 0; i < groupCount; i++) {
-            const slice = teams.slice(index, index + groupSize)
-            index += groupSize
+        for (const [category, teams] of Object.entries(teamsByCategory)) {
+            const totalTeams = teams.length
+            const groupCount = Math.floor(totalTeams / groupSize)
+            const remainder = totalTeams % groupSize
 
-            await tx.groupTeam.createMany({
-                data: slice.map((t) => ({
-                    groupId: createdGroups[i].uid,
-                    teamId: t.uid,
-                })),
-            })
-        }
+            if (totalTeams === 0) continue
 
-        if (remainder > 0) {
-            const leftoverTeams = teams.slice(groupCount * groupSize)
+            console.log(`Creating groups for ${category}: ${totalTeams} teams`)
 
-            for (let i = 0; i < leftoverTeams.length; i++) {
-                const targetGroup = createdGroups[i % createdGroups.length]
-                await tx.groupTeam.create({
-                    data: { groupId: targetGroup.uid, teamId: leftoverTeams[i].uid },
+            const newGroups = await Promise.all(
+                Array.from({ length: groupCount }, (_, i) =>
+                    tx.group.create({
+                        data: {
+                            tournamentId: tourId,
+                            name: `${category}-Group ${String.fromCharCode(65 + i)}`,
+                        },
+                    }),
+                ),
+            )
+
+            createdGroups.push(...newGroups)
+
+            let index = 0
+            for (let i = 0; i < groupCount; i++) {
+                const slice = teams.slice(index, index + groupSize)
+                index += groupSize
+
+                await tx.groupTeam.createMany({
+                    data: slice.map((t) => ({
+                        groupId: newGroups[i].uid,
+                        teamId: t.uid,
+                    })),
                 })
+            }
+
+            if (remainder > 0) {
+                const leftoverTeams = teams.slice(groupCount * groupSize)
+                console.log(leftoverTeams)
+                for (let i = 0; i < leftoverTeams.length; i++) {
+                    const targetGroup = newGroups[i % newGroups.length]
+                    await tx.groupTeam.create({
+                        data: {
+                            groupId: targetGroup.uid,
+                            teamId: leftoverTeams[i].uid,
+                        },
+                    })
+                }
             }
         }
 
-        const groupWithMembers = await tx.group.findMany({
+        const groupWithTeams = await tx.group.findMany({
             where: { tournamentId: tourId },
             include: {
                 teams: {
@@ -62,7 +82,6 @@ export const createGroupService = async (tourId: string) => {
                             select: {
                                 uid: true,
                                 name: true,
-                                email: true,
                                 logo: true,
                                 school: true,
                                 category: true,
@@ -73,9 +92,24 @@ export const createGroupService = async (tourId: string) => {
             },
         })
 
-        return groupWithMembers
+        return groupWithTeams
     })
 
     emitToTournament(tourId, 'groups:generate', result)
     return result
+}
+
+export const getAllGroupsService = async (tourId: string) => {
+    return await prisma.group.findMany({
+        where: {
+            tournamentId: tourId,
+        },
+        include: {
+            teams: {
+                include: {
+                    team: true,
+                },
+            },
+        },
+    })
 }

@@ -35,6 +35,11 @@ enum BracketType {
   GRAND_FINAL
 }
 
+enum StatusRounds {
+  ACTIVE
+  FINISHED
+}
+
 enum MatchStatus {
   PENDING
   SCHEDULED
@@ -58,6 +63,8 @@ model User {
   resetToken String?  @unique
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  @@index([uid, email, name])
 }
 
 model Team {
@@ -68,6 +75,14 @@ model Team {
   logo         String?
   password     String
   category     CompetitionCategory
+  point        Int?     @default(0)
+  matchPlay    Int?     @default(0)
+  golScore     Int?     @default(0)
+  golConfident Int?     @default(0)
+  golDifferent Int?     @default(0)
+  knockoutScore Int?    @default(0)
+  knockoutConfident Int? @default(0)
+  knockoutDifferent Int? @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -76,8 +91,11 @@ model Team {
   matchesA     Match[] @relation("TeamA")
   matchesB     Match[] @relation("TeamB")
   groupTeams   GroupTeam[]
-  matchWins    MatchRound[] @relation("WinnerRounds")
-  matchWinner  Match[]
+  roundWins    MatchRound[] @relation("WinnerRounds")
+  matchWins    Match[]
+  score        LogScore[]
+
+  @@index([name, email, school, category])
 }
 
 model Participant {
@@ -90,6 +108,8 @@ model Participant {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   team             Team     @relation(fields: [teamId], references: [uid])
+
+  @@index([name, teamId, roleInTeam])
 }
 
 // TOURNAMENT & SETTINGS
@@ -110,19 +130,25 @@ model Tournament {
   brackets     Bracket[]
   registrations Registration[]
   matches      Match[]
+
+  @@index([name, uid, slug, stageType, playoffType])
 }
 
 model Setting {
-  uid            String   @id @default(uuid())
-  tournamentId   String   @unique
-  defaultBestOf  Int      @default(3)
-  groupBestOf    Int      @default(1)
-  upperBestOf    Int      @default(3)
-  lowerBestOf    Int      @default(3)
-  grandFinalBestOf Int    @default(5)
-  createdAt      DateTime @default(now())
+  uid              String     @id @default(uuid())
+  tournamentId     String     @unique
+  defaultBestOf    Int        @default(3)
+  groupBestOf      Int        @default(1)
+  upperBestOf      Int        @default(3)
+  lowerBestOf      Int        @default(3)
+  grandFinalBestOf Int        @default(5)
+  roundDurationSoccer Float?  @default(3)
+  roundDurationSumo  Float?   @default(5)
+  createdAt      DateTime     @default(now())
 
-  tournament     Tournament @relation(fields: [tournamentId], references: [uid])
+  tournament     Tournament   @relation(fields: [tournamentId], references: [uid])
+
+  @@index([uid, tournamentId, defaultBestOf, grandFinalBestOf, groupBestOf, lowerBestOf, upperBestOf])
 }
 
 // REGISTRATION & ATTENDANCE
@@ -143,6 +169,8 @@ model Registration {
   team         Team       @relation(fields: [teamId], references: [uid])
   tournament   Tournament @relation(fields: [tournamentId], references: [uid])
   attendance   Attendance?
+
+  @@index([uid, teamId, tournamentId, status])
 }
 
 model Attendance {
@@ -153,6 +181,8 @@ model Attendance {
   scannedBy      String
 
   registration   Registration @relation(fields: [registrationId], references: [uid])
+
+  @@index([uid, registrationId, isPresent, scannedAt, scannedBy])
 }
 
 // GROUP STAGE
@@ -165,6 +195,8 @@ model Group {
   tournament   Tournament @relation(fields: [tournamentId], references: [uid])
   teams        GroupTeam[]
   matches      Match[]
+
+  @@index([uid, tournamentId, name])
 }
 
 model GroupTeam {
@@ -177,6 +209,7 @@ model GroupTeam {
   team     Team  @relation(fields: [teamId], references: [uid])
 
   @@unique([groupId, teamId])
+  @@index([uid, groupId, teamId])
 }
 
 // MATCH & ROUND
@@ -193,6 +226,7 @@ model Match {
   winnerId     String?
   status       MatchStatus @default(PENDING)
   roundLabel   String?
+  category     CompetitionCategory?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -203,6 +237,9 @@ model Match {
   teamB        Team       @relation("TeamB", fields: [teamBId], references: [uid])
   winner       Team?      @relation(fields: [winnerId], references: [uid])
   rounds       MatchRound[]
+  Score        LogScore[]
+
+  @@index([tournamentId, uid, groupId, bracketId, teamAId, teamBId, bestOf, scoreA, scoreB, winnerId, status])
 }
 
 model MatchRound {
@@ -210,12 +247,35 @@ model MatchRound {
   matchId      String
   roundNumber  Int
   winnerId     String?
-  scoreDetail  String?  // ex: "10-7"
+  scoreDetail  String?
+  status       StatusRounds @default(ACTIVE) 
+  endTime      String
   createdAt    DateTime @default(now())
 
   match        Match    @relation(fields: [matchId], references: [uid])
   winner       Team?    @relation("WinnerRounds", fields: [winnerId], references: [uid])
+  Score        LogScore[]
   @@unique([matchId, roundNumber])
+  @@index([uid, matchId, roundNumber, winnerId, scoreDetail])
+}
+
+model LogScore {
+  uid     String  @id @default(uuid())
+  matchId String  
+  teamId  String
+  roundId String
+  golScore Int?   @default(0)
+  knockout Int?   @default(0)
+  pinalty  Int?   @default(0)
+  foul     Int?   @default(0)
+  yellowCard Int? @default(0)
+  redCard  Int?   @default(0)
+
+  time    String
+
+  match  Match?  @relation(fields: [matchId], references: [uid])
+  round  MatchRound? @relation(fields: [roundId], references: [uid])
+  team   Team?  @relation(fields: [teamId], references: [uid])   
 }
 
 // BRACKET
@@ -229,4 +289,6 @@ model Bracket {
 
   tournament    Tournament @relation(fields: [tournamentId], references: [uid])
   matches       Match[]
+
+  @@index([uid, tournamentId, type, round, name])
 }
