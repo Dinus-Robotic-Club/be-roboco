@@ -21,6 +21,10 @@ export const registerUserController = async (req: Request, res: Response) => {
             sendResponse(res, StatusCode.BAD_REQUEST, 'User dengan email ini telah terdaftar, gunakan email atau nomor lain untuk registrasi!')
             return
         }
+        if (errMessage.includes('No file Provided')) {
+            sendResponse(res, StatusCode.BAD_REQUEST, 'Not found file please check ur file!')
+            return
+        }
         sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal server Error')
         console.error('Internal server Error ', error)
     }

@@ -1,6 +1,7 @@
 node_modules
 # Keep environment variables out of version control
 .env
+.env.dev
 
 /generated
 
@@ -8,3 +9,4 @@ node_modules
 /uploads
 /prisma/migrations
 /dist
+bun.lock

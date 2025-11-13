@@ -1,6 +1,5 @@
 import authRoutes from './auth.routes'
 import participantRoutes from '../routes/team.routes'
-import attendeanceRoutes from './attendeance.routes'
 import tournamentRoutes from './tour.routes'
 import groupRoutes from '../routes/group.routes'
 import matchRoutes from '../routes/match.routes'
@@ -14,11 +13,6 @@ export const routes = [
     {
         path: '/teams',
         router: participantRoutes,
-        middleware: [],
-    },
-    {
-        path: '/attendeance',
-        router: attendeanceRoutes,
         middleware: [],
     },
     {

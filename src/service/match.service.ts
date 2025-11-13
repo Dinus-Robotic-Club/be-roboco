@@ -144,7 +144,7 @@ export const createMatchRound = async (matchId: string, tourId: string) => {
     })
 }
 
-export const updateScore = async (matchId: string, teamId: string, golScore: number, knockoutScore: number, time: string) => {
+export const updateScore = async (matchId: string, teamId: string, golScore: number, knockoutScore?: number, time?: string) => {
     const match = await prisma.match.findUnique({
         where: { uid: matchId },
         include: { rounds: true },
@@ -166,7 +166,7 @@ export const updateScore = async (matchId: string, teamId: string, golScore: num
                 roundId: currentRound!.uid,
                 teamId: teamId,
                 golScore: golScore,
-                time: time,
+                time: time!,
             },
         })
 
