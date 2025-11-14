@@ -115,14 +115,6 @@ export const createTeamService = async (data: IReqBodyCreateTeam, tourId: string
             },
             omit: {
                 password: true,
-                point: true,
-                golScore: true,
-                golConfident: true,
-                golDifferent: true,
-                knockoutConfident: true,
-                knockoutDifferent: true,
-                knockoutScore: true,
-                matchPlay: true,
             },
         })
 

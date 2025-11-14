@@ -5,7 +5,7 @@ import { createGroupService, getAllGroupsService } from '../service/group.servic
 
 export const createGroupController = async (req: Request, res: Response) => {
     try {
-        const { tournamentId } = req.body
+        const { tournamentId } = req.params
         if (!tournamentId) {
             sendResponse(res, StatusCode.BAD_REQUEST, 'Missing field tournamentId!')
             return

@@ -16,7 +16,7 @@ router.post('/registration', uploadTeamImage.any(), createTeamController)
 router.post('/attendeance', authMiddleware, createAttendeanceController)
 router.get('/get-all', getAllTeamsController)
 router.get('/profile', authMiddleware, getProfileTeamController)
-router.put('/update/:uid', updateStatusRegistrationController)
+router.put('/update/:uid/status', updateStatusRegistrationController)
 router.delete('/delete/:uid', deleteTeamController)
 
 export default router

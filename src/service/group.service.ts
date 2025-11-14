@@ -60,9 +60,10 @@ export const createGroupService = async (tourId: string) => {
 
             if (remainder > 0) {
                 const leftoverTeams = teams.slice(groupCount * groupSize)
-                console.log(leftoverTeams)
                 for (let i = 0; i < leftoverTeams.length; i++) {
                     const targetGroup = newGroups[i % newGroups.length]
+                    console.log(targetGroup)
+
                     await tx.groupTeam.create({
                         data: {
                             groupId: targetGroup.uid,

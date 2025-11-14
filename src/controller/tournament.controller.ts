@@ -1,8 +1,15 @@
 import { Request, Response } from 'express'
 import { sendResponse } from '../utils/func/res'
 import { StatusCode } from '../utils/types/types'
-import { ICreateTournament, IUpdateTournament } from '../utils/types/tour'
-import { createTournamentService, deleteTournamentService, getAllTournamentService, getDetailTournamentBySlugService, updateTournamentService } from '../service/tournament.service'
+import { ICreateTournament, IUpdateSetting, IUpdateTournament } from '../utils/types/tour'
+import {
+    createTournamentService,
+    deleteTournamentService,
+    getAllTournamentService,
+    getDetailTournamentBySlugService,
+    updateSettingService,
+    updateTournamentService,
+} from '../service/tournament.service'
 
 export const createTournamentController = async (req: Request, res: Response) => {
     try {
@@ -97,5 +104,27 @@ export const deleteTournamentController = async (req: Request, res: Response) =>
     } catch (error) {
         sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error')
         console.log(error)
+    }
+}
+
+export const updateSettingsController = async (req: Request, res: Response) => {
+    try {
+        const { tourId } = req.params
+        const { data }: { data: IUpdateSetting } = req.body
+
+        if (!tourId) {
+            sendResponse(res, StatusCode.BAD_REQUEST, 'Missing tournament id')
+            return
+        }
+        if (!data) {
+            sendResponse(res, StatusCode.BAD_REQUEST, 'Missing field data!')
+            return
+        }
+
+        const updated = await updateSettingService(tourId, data)
+        sendResponse(res, StatusCode.SUCCESS, 'Succes update data', updated)
+    } catch (error) {
+        console.log(error)
+        sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error', error)
     }
 }
