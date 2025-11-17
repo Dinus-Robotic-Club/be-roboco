@@ -52,7 +52,11 @@ export const createTeamController = async (req: Request, res: Response) => {
     } catch (error) {
         const errorMessage = (error as Error).message
         if (errorMessage.includes('Team Name Exist')) {
-            sendResponse(res, StatusCode.CONFLICT, 'Team Name Already Exists')
+            sendResponse(res, StatusCode.CONFLICT, 'Team Name Already Exists', errorMessage)
+            return
+        }
+        if (errorMessage.includes('Tournament not found')) {
+            sendResponse(res, StatusCode.NOT_FOUND, 'Tournament not found', errorMessage)
             return
         }
         if (errorMessage.includes('Email has been used')) {

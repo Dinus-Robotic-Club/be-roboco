@@ -102,6 +102,14 @@ export const createTeamService = async (data: IReqBodyCreateTeam, tourId: string
     if (existTeam) throw new Error('Team Name already exists')
     if (existEmail) throw new Error('Email has been used')
 
+    const checkExistTour = await prisma.tournament.findUnique({
+        where: {
+            uid: tourId,
+        },
+    })
+
+    if (!checkExistTour) throw new Error('Tournament not found')
+
     let team
     let participants: ICreateParticipant[] = []
 
