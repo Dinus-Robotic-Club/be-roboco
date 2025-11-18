@@ -5,7 +5,7 @@ import { ITokenPayload } from '../types/types'
 dotenv.config()
 
 const SECRET_TOKEN = process.env.JWT_SECRET as string
-    
+
 export const generateToken = (payload: ITokenPayload): string => {
     return jwt.sign(payload, SECRET_TOKEN, {
         expiresIn: '7d',

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { sendResponse } from '../../utils/func/res'
-import { registerService } from '../../service/auth/auth.service'
+import { registerService } from '../../service/auth.service'
 import { StatusCode } from '../../utils/types/types'
 import { IRegisterUserInput } from '../../utils/types/auth'
 
@@ -19,6 +19,10 @@ export const registerUserController = async (req: Request, res: Response) => {
         const errMessage = (error as Error).message || 'Internal Server Error'
         if (errMessage.includes('User already exist!')) {
             sendResponse(res, StatusCode.BAD_REQUEST, 'User dengan email ini telah terdaftar, gunakan email atau nomor lain untuk registrasi!')
+            return
+        }
+        if (errMessage.includes('No file Provided')) {
+            sendResponse(res, StatusCode.BAD_REQUEST, 'Not found file please check ur file!')
             return
         }
         sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal server Error')

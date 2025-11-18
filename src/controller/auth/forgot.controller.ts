@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { sendResponse } from '../../utils/func/res'
-import { forgotPasswordService } from '../../service/auth/auth.service'
+import { forgotPasswordService } from '../../service/auth.service'
 
 export const forgotPasswordController = async (req: Request, res: Response) => {
     try {

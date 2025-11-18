@@ -1,10 +1,10 @@
-import { generateResetToken, generateToken, verifyResetToken } from '../../utils/func/jwt'
-import { createUser, getUserByEmail, updatePasswordUser, updateResetTokenUser } from '../global/user.service'
-import { comparePassword } from '../../utils/func/global'
-import { ILoginTeamInput, ILoginUserInput, IRegisterUserInput, IResponseLogin } from '../../utils/types/auth'
-import { sendForgotPasswordEmail } from '../../utils/func/mailer'
+import { generateResetToken, generateToken, verifyResetToken } from '../utils/func/jwt'
+import { createUser, getUserByEmail, updatePasswordUser, updateResetTokenUser } from './global/user.service'
+import { comparePassword } from '../utils/func/global'
+import { ILoginTeamInput, ILoginUserInput, IRegisterUserInput, IResponseLogin } from './../utils/types/auth'
+import { sendForgotPasswordEmail } from '../utils/func/mailer'
 import * as dotenv from 'dotenv'
-import { getTeamByName } from '../global/teams.service'
+import { getTeamByNameService } from './teams.service'
 
 dotenv.config()
 
@@ -78,7 +78,7 @@ export const resetPasswordService = async (newPassword: string, token: string) =
 }
 
 export const loginTeam = async (data: ILoginTeamInput): Promise<IResponseLogin> => {
-    const user = await getTeamByName(data.name)
+    const user = await getTeamByNameService(data.name)
 
     console.log(user)
 

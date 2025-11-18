@@ -8,6 +8,17 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// ENUMS
+enum TournamentStageType {
+  SINGLE_STAGE
+  DOUBLE_STAGE
+}
+
+enum PlayoffType {
+  SINGLE_ELIM
+  DOUBLE_ELIM
+}
+
 enum CompetitionCategory {
   SUMO
   SOCCER
@@ -19,10 +30,14 @@ enum RoleParticipant {
 }
 
 enum BracketType {
-  GROUP
   UPPER
   LOWER
   GRAND_FINAL
+}
+
+enum StatusRounds {
+  ACTIVE
+  FINISHED
 }
 
 enum MatchStatus {
@@ -37,75 +52,118 @@ enum RegistrationStatus {
   PENDING
   APPROVED
   REJECTED
-  COMPLETED
 }
 
+// USER & TEAM
 model User {
-  uid       String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  password  String
-  resetToken String? @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  uid        String   @id @default(uuid())
+  email      String   @unique
+  name       String
+  password   String
+  resetToken String?  @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  @@index([uid])
-  @@index([email])
-  @@index([name])
-}
-
-model Participant {
- uid       String    @id @default(uuid())
- name      String 
- teamId    String
- image     String  
- identityCardImage String 
- roleInTeam RoleParticipant
- createdAt DateTime  @default(now())
- updatedAt DateTime  @updatedAt
- team     Team      @relation(fields: [teamId], references: [uid])
-
- @@index([uid])
- @@index([name])
- @@index([teamId])
- @@index([roleInTeam])
+  @@index([uid, email, name])
 }
 
 model Team {
-  uid      String    @id @default(uuid())
-  name     String    @unique
-  email    String    @unique    
-  school   String
-  password String
-  twibbon  String
-  invoice  String
-  category  CompetitionCategory
-  resetToken String? @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  participants Participant[]
-  registrations Registration[]
-     
+  uid          String   @id @default(uuid())
+  name         String   @unique  //untuk menyimpan nama tim
+  email        String   @unique  //untuk menyimpan email
+  school       String   //untuk menyimpan basis school team
+  logo         String?  //untuk menyimpan logo team
+  password     String   //untuk menyimpan password team
+  category     CompetitionCategory  //untuk menyimpan category yang di ikuti oleh team
+  createdAt    DateTime @default(now()) //untuk menyimpan data kapan team dibuat
+  updatedAt    DateTime @updatedAt      //untuk menyimpan kapan data di update
 
-  @@index([name])
-  @@index([school])
-  @@index([uid])
-  @@index([category])
+  participants Participant[]    //relasi ke tabel participants
+  registrations Registration[]  //relasi ke tabel registrations
+  matchesA     Match[] @relation("TeamA") //relasi ke tabel match untuk team A
+  matchesB     Match[] @relation("TeamB") //relasi ke tabel match untuk team B
+  groupTeams   GroupTeam[] //relasi ke pivot antara group dengan team (menyimpan banyak data dalam group)
+  roundWins    MatchRound[] @relation("WinnerRounds") //relasi ke match round untuk menentukan pemenang round dalam match
+  matchWins    Match[]  //relasi ke match untuk menentukan pemenang match
+  score        LogScore[] //relasi ke score untuk menentukan pemilik score di dalam pertandingan
+
+  @@index([name, email, school, category])
 }
 
+model Participant {
+  uid              String   @id @default(uuid())
+  name             String   //untuk menyimpan nama participant
+  teamId           String   //untuk menyimpan uid dari tabel team (relasi)
+  image            String   //untuk menyimpan gambar participant
+  identityCardImage String  //untuk menyimpan gambar identitas participant
+  roleInTeam       RoleParticipant  //untuk menyimpan role participant di dalam team
+  createdAt        DateTime @default(now()) //untuk menyimpan kapan participant dibuat
+  updatedAt        DateTime @updatedAt  //untuk menyimpan kapan participant di update
+  team             Team     @relation(fields: [teamId], references: [uid])  //relasi ke team
 
+  @@index([name, teamId, roleInTeam])
+}
+
+// TOURNAMENT & SETTINGS
+model Tournament {
+  uid          String    @id @default(uuid())
+  name         String                         //untuk menyimpan nama turnament
+  slug         String    @unique              //untuk menyimpan slug atau url turnamen
+  description  String?                        //untuk menyimpan description turnament
+  startDate    DateTime                       //untuk menyimpan kapan turnament dimulai
+  endDate      DateTime?                      //untuk menyimpan kapan turnament berakhir
+  stageType    TournamentStageType            //untuk menyimpan dan menentukan stage dalam turnament
+  playoffType  PlayoffType?                   //untuk menyimpan dan menentukan type pada playoff
+  createdAt    DateTime  @default(now())      //untuk menyimpan kapan turnament dibuat
+  updatedAt    DateTime  @updatedAt           //untuk menyimpan kapan turnament diedit atau update
+
+  settings     Setting?                       //relasi pada setting untuk mensetting turnamnet
+  groups       Group[]                        //relasi pada group untuk menentukan grup pada turnament
+  brackets     Bracket[]                      //relasi pada bracket untuk menentukan bracket pada turnament
+  registrations Registration[]                //relasi pada registration agar registrasi tidak salah pada turnament yang di tuju  
+  matches      Match[]                        //relasi pada match untuk melihat match pada turnament
+
+  @@index([name, uid, slug, stageType, playoffType]) //indexing agar query lebih cepat
+}
+
+model Setting {
+  uid              String     @id @default(uuid())
+  tournamentId     String     @unique               //untuk menyimpan tournamentid pada setting
+  defaultBestOf    Int        @default(3)           //untuk menyimpan default best off pada tournament
+  groupBestOf      Int        @default(1)           //untuk menyimpan best off pada group stage
+  upperBestOf      Int        @default(3)           //untuk menyimpan best off pada upper bracket stage
+  lowerBestOf      Int        @default(3)           //untuk menyimpan best off pada lower bracket stage
+  grandFinalBestOf Int        @default(5)           //untuk menyimpan best off pada grandfinal stage
+  roundDurationSoccer Float?  @default(3)           //untuk menyimpan durasi per round untuk soccer
+  roundDurationSumo  Float?   @default(5)           //untuk menyimpan durasi per round untuk Sumo
+  createdAt      DateTime     @default(now())       //untuk menyimpan kapan setting dibuat
+  updatedAt      DateTime     @updatedAt            //untuk menyimpan kapam setting diupdate
+
+  tournament     Tournament   @relation(fields: [tournamentId], references: [uid]) //relasi ke tournament agar bisa menghubungkan antara setting dan turnament
+
+  @@index([uid, tournamentId, defaultBestOf, grandFinalBestOf, groupBestOf, lowerBestOf, upperBestOf]) //indexing
+}
+
+// REGISTRATION & ATTENDANCE
 model Registration {
-  uid       String   @id @default(uuid())
-  teamId    String   
-  qrToken   String?   @unique
-  qrUrl     String?
-  status    RegistrationStatus @default(PENDING)
-  registeredAt DateTime @default(now())
-  verifiedAt  DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  attendances Attendance?
-  team      Team     @relation(fields: [teamId], references: [uid])
+  uid          String   @id @default(uuid())
+  teamId       String                         //untuk menyimpan team id di registration
+  tournamentId String                         //untuk menyimpan turnament id di registration
+  qrToken      String?  @unique               //untuk menyimpan qr token untuk validasi registrasi
+  qrUrl        String?                        //untuk menyimpan qr url untuk validasi registrasi via scan
+  twibbon      String?                        //untuk menyimpan twibbon team
+  invoice      String?                        //untuk menyimpan bukti invoice team
+  status       RegistrationStatus @default(PENDING)   //untuk menyimpan status registrasi pada team
+  registeredAt DateTime @default(now())       //untuk menyimpan kapan team registrasi
+  verifiedAt   DateTime?                      //untuk menyimpan kapan team verifikasi 
+  createdAt    DateTime @default(now())       //untuk menyimpan kapan registrasi di buat
+  updatedAt    DateTime @default(now())            //untuk menyimpan kapan registrasi diupdate
+
+  team         Team       @relation(fields: [teamId], references: [uid])        //relasi pada team
+  tournament   Tournament @relation(fields: [tournamentId], references: [uid])  //relasi pada tournament
+  attendance   Attendance?                    //relasi pada attendeance
+
+  @@index([uid, teamId, tournamentId, status])   //indexing
 }
 
 model Attendance {
@@ -115,5 +173,128 @@ model Attendance {
   scannedAt      DateTime?
   scannedBy      String
 
-  registration Registration @relation(fields: [registrationId], references: [uid])
+  registration   Registration @relation(fields: [registrationId], references: [uid])
+
+  @@index([uid, registrationId, isPresent, scannedAt, scannedBy])
+}
+
+// GROUP STAGE
+model Group {
+  uid          String   @id @default(uuid())
+  tournamentId String
+  name         String
+  createdAt    DateTime @default(now())
+
+  tournament   Tournament @relation(fields: [tournamentId], references: [uid])
+  teams        GroupTeam[]
+  matches      Match[]
+
+  @@index([uid, tournamentId, name])
+}
+
+model GroupTeam {
+  uid      String @id @default(uuid())
+  groupId  String
+  teamId   String
+  seed     Int?
+  point        Int?     @default(0)
+  matchPlay    Int?     @default(0)
+  golScore     Int?     @default(0)
+  golConceded Int?     @default(0)
+  golDifferent Int?     @default(0)
+  knockoutScore Int?    @default(0)
+  knockoutConceded Int? @default(0)
+  knockoutDifferent Int? @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) 
+
+  group    Group @relation(fields: [groupId], references: [uid])
+  team     Team  @relation(fields: [teamId], references: [uid])
+  score    LogScore[] //realasi ke score untuk mengambil score dan diakumulasikan
+
+  @@unique([groupId, teamId])
+  @@index([uid, groupId, teamId])
+}
+
+// MATCH & ROUND
+model Match {
+  uid          String  @id @default(uuid())
+  tournamentId String
+  groupId      String?
+  bracketId    String?
+  teamAId      String
+  teamBId      String
+  bestOf       Int      @default(3)
+  scoreA       Int      @default(0)
+  scoreB       Int      @default(0)
+  winnerId     String?
+  status       MatchStatus @default(PENDING)
+  roundLabel   String?
+  category     CompetitionCategory?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tournament   Tournament @relation(fields: [tournamentId], references: [uid])
+  group        Group?     @relation(fields: [groupId], references: [uid])
+  bracket      Bracket?   @relation(fields: [bracketId], references: [uid])
+  teamA        Team       @relation("TeamA", fields: [teamAId], references: [uid])
+  teamB        Team       @relation("TeamB", fields: [teamBId], references: [uid])
+  winner       Team?      @relation(fields: [winnerId], references: [uid])
+  rounds       MatchRound[]
+  Score        LogScore[]
+
+  @@index([tournamentId, uid, groupId, bracketId, teamAId, teamBId, bestOf, scoreA, scoreB, winnerId, status])
+}
+
+model MatchRound {
+  uid          String  @id @default(uuid())
+  matchId      String
+  roundNumber  Int
+  winnerId     String?
+  scoreDetail  String?
+  status       StatusRounds @default(ACTIVE) 
+  endTime      String
+  createdAt    DateTime @default(now())
+
+  match        Match    @relation(fields: [matchId], references: [uid])
+  winner       Team?    @relation("WinnerRounds", fields: [winnerId], references: [uid])
+  Score        LogScore[]
+  @@unique([matchId, roundNumber])
+  @@index([uid, matchId, roundNumber, winnerId, scoreDetail])
+}
+
+model LogScore {
+  uid     String  @id @default(uuid())
+  matchId String  
+  teamId  String
+  roundId String
+  groupTeamId String?
+  golScore Int?   @default(0)
+  knockout Int?   @default(0)
+  pinalty  Int?   @default(0)
+  foul     Int?   @default(0)
+  yellowCard Int? @default(0)
+  redCard  Int?   @default(0)
+
+  time    String
+
+  match  Match?  @relation(fields: [matchId], references: [uid])
+  round  MatchRound? @relation(fields: [roundId], references: [uid])
+  team   Team?  @relation(fields: [teamId], references: [uid])   
+  groupTeam GroupTeam? @relation(fields: [groupTeamId], references: [uid])
+}
+
+// BRACKET
+model Bracket {
+  uid           String   @id @default(uuid())
+  tournamentId  String
+  type          BracketType
+  round         Int
+  name          String?
+  createdAt     DateTime @default(now())
+
+  tournament    Tournament @relation(fields: [tournamentId], references: [uid])
+  matches       Match[]
+
+  @@index([uid, tournamentId, type, round, name])
 }

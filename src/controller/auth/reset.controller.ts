@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { sendResponse } from '../../utils/func/res'
-import { resetPasswordService } from '../../service/auth/auth.service'
+import { resetPasswordService } from '../../service/auth.service'
 
 export const resetPasswordController = async (req: Request, res: Response) => {
     const { newPassword, token } = req.body

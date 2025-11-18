@@ -8,6 +8,7 @@ const FOLDER_MAP = {
     invoice: path.join(BASE_UPLOAD_PATH, 'invoices'),
     participant: path.join(BASE_UPLOAD_PATH, 'participants'),
     idcard: path.join(BASE_UPLOAD_PATH, 'id-cards'),
+    logo: path.join(BASE_UPLOAD_PATH, 'logo'),
     default: BASE_UPLOAD_PATH,
 }
 
@@ -39,6 +40,7 @@ export const saveImageToDisk = (file: Express.Multer.File, name: string): string
     if (name.toLowerCase().includes('twibbon')) targetFolder = FOLDER_MAP.twibbon
     else if (name.toLowerCase().includes('invoice')) targetFolder = FOLDER_MAP.invoice
     else if (name.toLowerCase().includes('participant')) targetFolder = FOLDER_MAP.participant
+    else if (name.toLowerCase().includes('logo')) targetFolder = FOLDER_MAP.logo
     else if (name.toLowerCase().includes('id-card') || name.toLowerCase().includes('identity')) targetFolder = FOLDER_MAP.idcard
 
     const ext = path.extname(file.originalname)
