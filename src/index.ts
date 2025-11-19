@@ -9,7 +9,7 @@ import mainRoutes from './routes/main-routes'
 import path from 'path'
 import http from 'http'
 import { setupSocket } from './service/socket.service'
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3001
 
 dotenv.config()
 

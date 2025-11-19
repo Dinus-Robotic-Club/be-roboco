@@ -26,7 +26,7 @@ export const loginUserController = async (req: Request, res: Response) => {
         } else if (errorMessage.includes('Invalid Password')) {
             sendResponse(res, StatusCode.UNAUTHORIZED, 'Password tidak valid!')
             return
-        }``
+        }
         sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error')
         console.error('Error login : ', error)
     }

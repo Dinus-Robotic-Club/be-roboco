@@ -15,7 +15,7 @@ export const createTournamentController = async (req: Request, res: Response) =>
     try {
         const { data }: { data: ICreateTournament } = req.body
 
-        if (!data || !data.name || !data.slug || !data.startDate || !data.playoffType || !data.stageType) {
+        if (!data || !data.name || !data.slug || !data.startDate || !data.stageType) {
             sendResponse(res, StatusCode.BAD_REQUEST, `Missing field : Name, Slug, StartDate, playoffType, stageType`)
             return
         }
@@ -29,6 +29,11 @@ export const createTournamentController = async (req: Request, res: Response) =>
 
         sendResponse(res, StatusCode.CREATED, 'Tournament created!', response)
     } catch (error) {
+        const errMessage = (error as Error).message
+        if (errMessage.includes('Tournament already exist')) {
+            sendResponse(res, StatusCode.CONFLICT, 'Tournament already exist', errMessage)
+            return
+        }
         sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error!')
         console.log(error)
     }

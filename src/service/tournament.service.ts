@@ -3,6 +3,14 @@ import { ICreateTournament, IUpdateSetting, IUpdateTournament } from '../utils/t
 import { emitToTournament, io } from './socket.service'
 
 export const createTournamentService = async (data: ICreateTournament) => {
+    const existTournament = await prisma.tournament.findUnique({
+        where: {
+            slug: data.slug,
+        },
+    })
+
+    if (existTournament) throw new Error('Tournament already exist')
+
     return await prisma.$transaction(async (tx) => {
         const turnament = await tx.tournament.create({
             data: {
@@ -12,7 +20,7 @@ export const createTournamentService = async (data: ICreateTournament) => {
                 startDate: new Date(data.startDate),
                 endDate: data.endDate ? new Date(data.endDate) : null,
                 stageType: data.stageType,
-                playoffType: data.playoffType,
+                playoffType: data?.playoffType,
             },
         })
 
