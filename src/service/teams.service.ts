@@ -1,8 +1,9 @@
-import { ICreateParticipant, IReqBodyCreateTeam, RegistrationStatus } from '../utils/types/team'
+import { ICreateParticipant, IReqBodyCreateTeam, IUpdateParticipant, IUpdateTeam, RegistrationStatus } from '../utils/types/team'
 import { dateToString, generateQrImage, generateQrToken, hashPassword } from '../utils/func/global'
 import { sendQrImage } from '../utils/func/mailer'
 import { prisma } from '../config/prisma'
 import { decodeQrToken } from '../utils/func/global'
+import { IUpdateTournament } from '../utils/types/tour'
 
 export const getTeamByNameService = async (name: string) => {
     return await prisma.team.findUnique({
@@ -27,6 +28,8 @@ export const getAllTeamsService = async () => {
                     name: true,
                     roleInTeam: true,
                     image: true,
+                    twibbon: true,
+                    phone: true,
                     identityCardImage: true,
                 },
             },
@@ -38,7 +41,6 @@ export const getAllTeamsService = async () => {
                     qrUrl: true,
                     status: true,
                     invoice: true,
-                    twibbon: true,
                     registeredAt: true,
                     verifiedAt: true,
                     attendance: {
@@ -73,13 +75,14 @@ export const getProfileTeamService = async (uid: string) => {
                     name: true,
                     roleInTeam: true,
                     image: true,
+                    twibbon: true,
+                    phone: true,
                 },
             },
             registrations: {
                 select: {
                     uid: true,
                     qrUrl: true,
-                    twibbon: true,
                 },
             },
         },
@@ -143,7 +146,6 @@ export const createTeamService = async (data: IReqBodyCreateTeam, tourId: string
                 teamId: team.uid,
                 status: 'PENDING',
                 tournamentId: tourId,
-                twibbon: data.twibbon,
                 invoice: data.invoice,
             },
         })
@@ -280,5 +282,40 @@ export const deleteTeamService = async (uid: string) => {
         await tx.team.delete({
             where: { uid },
         })
+    })
+}
+
+export const updateTeamService = async (uid: string, data: IUpdateTeam, logo: string) => {
+    const existTeam = await prisma.team.findUnique({
+        where: { uid: uid },
+    })
+
+    if (!existTeam) throw new Error('Team not found')
+
+    return await prisma.team.update({
+        where: {
+            uid: uid,
+        },
+        data: {
+            ...data,
+            logo: logo,
+        },
+    })
+}
+
+export const updateParticipantService = async (uid: string, data: IUpdateParticipant, image: string) => {
+    const existParticipant = await prisma.participant.findUnique({
+        where: { uid },
+    })
+    if (!existParticipant) throw new Error('Participant not found')
+
+    return await prisma.participant.update({
+        where: {
+            uid: uid,
+        },
+        data: {
+            ...data,
+            image: image,
+        },
     })
 }

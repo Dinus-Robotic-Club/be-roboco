@@ -10,31 +10,31 @@ import {
     updateSettingService,
     updateTournamentService,
 } from '../service/tournament.service'
+import { saveImageToDisk } from '../utils/upload'
 
 export const createTournamentController = async (req: Request, res: Response) => {
     try {
-        const { data }: { data: ICreateTournament } = req.body
+        const body: ICreateTournament = req.body
+        const images = req.files as Express.Multer.File[]
+        console.log(body)
 
-        if (!data || !data.name || !data.slug || !data.startDate || !data.stageType) {
-            sendResponse(res, StatusCode.BAD_REQUEST, `Missing field : Name, Slug, StartDate, playoffType, stageType`)
+        const imageTournament = saveImageToDisk(images[0], 'image-tour', body.name)
+
+        if (!body || !body.name || !body.slug || !body.startDate || !body.stageType) {
+            sendResponse(res, StatusCode.BAD_REQUEST, `Field nama atau slug atau tanggal mulai atau tipe stage tidak ditemukan`)
             return
         }
 
-        const response = await createTournamentService(data)
+        const response = await createTournamentService(body, imageTournament)
 
-        if (!response) {
-            sendResponse(res, StatusCode.BAD_REQUEST, 'Failed create tournament')
-            return
-        }
-
-        sendResponse(res, StatusCode.CREATED, 'Tournament created!', response)
+        sendResponse(res, StatusCode.CREATED, 'Turnamen terbuat', response)
     } catch (error) {
         const errMessage = (error as Error).message
         if (errMessage.includes('Tournament already exist')) {
-            sendResponse(res, StatusCode.CONFLICT, 'Tournament already exist', errMessage)
+            sendResponse(res, StatusCode.CONFLICT, 'Turnamen sudah ada', errMessage)
             return
         }
-        sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error!')
+        sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error!', 'Internal Server Error')
         console.log(error)
     }
 }
@@ -42,13 +42,9 @@ export const createTournamentController = async (req: Request, res: Response) =>
 export const getALlTournamentsController = async (_: Request, res: Response) => {
     try {
         const data = await getAllTournamentService()
-        if (!data) {
-            sendResponse(res, StatusCode.BAD_REQUEST, 'Failed get all tournaments')
-            return
-        }
-        sendResponse(res, StatusCode.SUCCESS, 'Succes get all tournaments', data)
+        sendResponse(res, StatusCode.SUCCESS, 'Sukses ambil semua turnamen', data)
     } catch (error) {
-        sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error!')
+        sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error!', 'Internal Server Error')
         console.log(error)
     }
 }
@@ -58,18 +54,14 @@ export const getDetailTournamentController = async (req: Request, res: Response)
         const { slug } = req.params
 
         if (!slug) {
-            sendResponse(res, StatusCode.BAD_REQUEST, 'Missing field slug')
+            sendResponse(res, StatusCode.BAD_REQUEST, 'Slug tidak ditemukan')
             return
         }
 
         const data = await getDetailTournamentBySlugService(slug)
-        if (!data) {
-            sendResponse(res, StatusCode.BAD_REQUEST, 'Failed get detail tournament')
-            return
-        }
-        sendResponse(res, StatusCode.SUCCESS, 'Succes get detail tournaments', data)
+        sendResponse(res, StatusCode.SUCCESS, 'Sukses ambil detail turnamen', data)
     } catch (error) {
-        sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error')
+        sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error', 'Internal Server Error')
         console.log(error)
     }
 }
@@ -77,16 +69,15 @@ export const getDetailTournamentController = async (req: Request, res: Response)
 export const updateTournamentController = async (req: Request, res: Response) => {
     try {
         const { uid } = req.params
-        const { data }: { data: IUpdateTournament } = req.body
+        const data: IUpdateTournament = req.body
+        const images = req.files as Express.Multer.File[]
 
-        const response = await updateTournamentService(data, uid)
-        if (!response) {
-            sendResponse(res, StatusCode.BAD_REQUEST, 'Failed update tournament!')
-            return
-        }
-        sendResponse(res, StatusCode.SUCCESS, 'Succes update tournament', response)
+        const image = saveImageToDisk(images[0], 'image-tour', data.name as string)
+
+        const response = await updateTournamentService(data, uid, image)
+        sendResponse(res, StatusCode.SUCCESS, 'Sukses update turnamen', response)
     } catch (error) {
-        sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error')
+        sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error', 'Internal Server Error')
         console.log(error)
     }
 }
@@ -95,19 +86,15 @@ export const deleteTournamentController = async (req: Request, res: Response) =>
     try {
         const { uid } = req.params
         if (!uid) {
-            sendResponse(res, StatusCode.BAD_REQUEST, 'Missing uid tournament!')
+            sendResponse(res, StatusCode.BAD_REQUEST, 'uid turnamen tidak ditemukan!', 'Missing uid tournament')
             return
         }
 
         const data = await deleteTournamentService(uid)
 
-        if (!data) {
-            sendResponse(res, StatusCode.BAD_REQUEST, 'Failed delete tournament!')
-            return
-        }
         sendResponse(res, StatusCode.SUCCESS, 'Succes delete tournament')
     } catch (error) {
-        sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error')
+        sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error', 'Internal Server Error')
         console.log(error)
     }
 }
@@ -118,16 +105,16 @@ export const updateSettingsController = async (req: Request, res: Response) => {
         const { data }: { data: IUpdateSetting } = req.body
 
         if (!tourId) {
-            sendResponse(res, StatusCode.BAD_REQUEST, 'Missing tournament id')
+            sendResponse(res, StatusCode.BAD_REQUEST, 'field Turnamen id tidak ditemukan')
             return
         }
         if (!data) {
-            sendResponse(res, StatusCode.BAD_REQUEST, 'Missing field data!')
+            sendResponse(res, StatusCode.BAD_REQUEST, 'field data tidak ditemukan!')
             return
         }
 
         const updated = await updateSettingService(tourId, data)
-        sendResponse(res, StatusCode.SUCCESS, 'Succes update data', updated)
+        sendResponse(res, StatusCode.SUCCESS, 'Sukses update setting', updated)
     } catch (error) {
         console.log(error)
         sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error', error)

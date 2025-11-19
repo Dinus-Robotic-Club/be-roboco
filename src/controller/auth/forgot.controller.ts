@@ -1,25 +1,26 @@
 import { Request, Response } from 'express'
 import { sendResponse } from '../../utils/func/res'
 import { forgotPasswordService } from '../../service/auth.service'
+import { StatusCode } from '../../utils/types/types'
 
 export const forgotPasswordController = async (req: Request, res: Response) => {
     try {
         const { email } = req.body
 
         if (!email) {
-            sendResponse(res, 400, 'Mohon lengkapi data yang ada!')
+            sendResponse(res, StatusCode.BAD_REQUEST, 'Email belum di input!')
             return
         }
 
         await forgotPasswordService(email)
-        sendResponse(res, 200, 'Forgot password berhasil dikirim ke email!')
+        sendResponse(res, StatusCode.SUCCESS, 'lupa password berhasil dikirim ke email!')
     } catch (error) {
-        const errMessage = (error as Error).message || 'Internal Server Error!'
+        const errMessage = (error as Error).message
         if (errMessage.includes('User not found!')) {
-            sendResponse(res, 404, 'User tidak dengan email tersebut tidak ditemukan!')
+            sendResponse(res, StatusCode.NOT_FOUND, 'User tidak dengan email tersebut tidak ditemukan!', errMessage)
             return
         }
         console.log('Error : ', errMessage)
-        sendResponse(res, 500, 'Internal Server Error!')
+        sendResponse(res, StatusCode.INTERNAL_ERROR, 'Internal Server Error!', 'Internal Server Error')
     }
 }

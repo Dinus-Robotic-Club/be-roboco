@@ -3,6 +3,13 @@ import { ICreatedGroups } from '../utils/types/group'
 import { emitToTournament } from './socket.service'
 
 export const createGroupService = async (tourId: string) => {
+    const existTour = await prisma.tournament.findUnique({
+        where: {
+            uid: tourId,
+        },
+    })
+
+    if (!existTour) throw new Error('Tournament not found')
     const groupSize = 4
 
     const result = await prisma.$transaction(async (tx) => {

@@ -96,6 +96,8 @@ model Participant {
   teamId           String   //untuk menyimpan uid dari tabel team (relasi)
   image            String   //untuk menyimpan gambar participant
   identityCardImage String  //untuk menyimpan gambar identitas participant
+  phone            String
+  twibbon          String
   roleInTeam       RoleParticipant  //untuk menyimpan role participant di dalam team
   createdAt        DateTime @default(now()) //untuk menyimpan kapan participant dibuat
   updatedAt        DateTime @updatedAt  //untuk menyimpan kapan participant di update
@@ -110,6 +112,8 @@ model Tournament {
   name         String                         //untuk menyimpan nama turnament
   slug         String    @unique              //untuk menyimpan slug atau url turnamen
   description  String?                        //untuk menyimpan description turnament
+  image        String?                        //untuk menyimpan image tournament
+  location     String ?                        //untuk menyimpan lokasi turnamen
   startDate    DateTime                       //untuk menyimpan kapan turnament dimulai
   endDate      DateTime?                      //untuk menyimpan kapan turnament berakhir
   stageType    TournamentStageType            //untuk menyimpan dan menentukan stage dalam turnament
@@ -151,7 +155,6 @@ model Registration {
   tournamentId String                         //untuk menyimpan turnament id di registration
   qrToken      String?  @unique               //untuk menyimpan qr token untuk validasi registrasi
   qrUrl        String?                        //untuk menyimpan qr url untuk validasi registrasi via scan
-  twibbon      String?                        //untuk menyimpan twibbon team
   invoice      String?                        //untuk menyimpan bukti invoice team
   status       RegistrationStatus @default(PENDING)   //untuk menyimpan status registrasi pada team
   registeredAt DateTime @default(now())       //untuk menyimpan kapan team registrasi
