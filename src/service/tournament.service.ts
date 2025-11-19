@@ -2,7 +2,7 @@ import { prisma } from './../config/prisma'
 import { ICreateTournament, IUpdateSetting, IUpdateTournament } from '../utils/types/tour'
 import { emitToTournament, io } from './socket.service'
 
-export const createTournamentService = async (data: ICreateTournament) => {
+export const createTournamentService = async (data: ICreateTournament, image: string) => {
     const existTournament = await prisma.tournament.findUnique({
         where: {
             slug: data.slug,
@@ -20,6 +20,8 @@ export const createTournamentService = async (data: ICreateTournament) => {
                 startDate: new Date(data.startDate),
                 endDate: data.endDate ? new Date(data.endDate) : null,
                 stageType: data.stageType,
+                image: image,
+                location: data.location,
                 playoffType: data?.playoffType,
             },
         })
@@ -40,13 +42,14 @@ export const createTournamentService = async (data: ICreateTournament) => {
     })
 }
 
-export const updateTournamentService = async (data: IUpdateTournament, tourId: string) => {
+export const updateTournamentService = async (data: IUpdateTournament, tourId: string, image: string) => {
     const updatedData = await prisma.tournament.update({
         where: {
             uid: tourId,
         },
         data: {
             ...data,
+            image: image,
         },
     })
     emitToTournament(tourId, 'tournament:update', updatedData)
@@ -75,6 +78,8 @@ export const getDetailTournamentBySlugService = async (slug: string) => {
             description: true,
             startDate: true,
             endDate: true,
+            location: true,
+            image: true,
             registrations: {
                 select: {
                     uid: true,

@@ -10,7 +10,7 @@ export interface ILoginUserInput {
 }
 
 export interface ILoginTeamInput {
-    name: string
+    email: string
     password: string
 }
 

@@ -78,7 +78,7 @@ export const resetPasswordService = async (newPassword: string, token: string) =
 }
 
 export const loginTeam = async (data: ILoginTeamInput): Promise<IResponseLogin> => {
-    const user = await getTeamByNameService(data.name)
+    const user = await getTeamByNameService(data.email)
 
     console.log(user)
 

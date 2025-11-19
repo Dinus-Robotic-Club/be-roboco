@@ -1,9 +1,11 @@
 export interface IReqBodyCreateTeam {
     team: ICreateTeam
     participants: ICreateParticipant[]
-    twibbon: string
     invoice: string
 }
+
+export type IUpdateTeam = Partial<Omit<ICreateTeam, 'password' | 'category' | 'email'>>
+export type IUpdateParticipant = Partial<Omit<ICreateParticipant, 'twibbon' | 'identityCardImage'>>
 
 export enum CompetitionCategory {
     SOCCER = 'SOCCER',
@@ -36,6 +38,8 @@ export interface ICreateParticipant {
     image: string
     identityCardImage: string
     roleInTeam: RoleParticipant
+    phone: string
+    twibbon: string
 }
 
 export interface ICreateRegistration {
