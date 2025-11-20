@@ -63,6 +63,9 @@ export const getAllTournamentService = async () => {
             name: true,
             startDate: true,
             endDate: true,
+            location: true,
+            image: true,
+            slug: true,
         },
     })
 }
