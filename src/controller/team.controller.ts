@@ -57,7 +57,7 @@ export const createTeamController = async (req: Request, res: Response) => {
         sendResponse(res, StatusCode.CREATED, 'Team Created', createdTeam)
     } catch (error) {
         const errorMessage = (error as Error).message
-        if (errorMessage.includes('Team Name Exist')) {
+        if (errorMessage.includes('Team Name already exists')) {
             sendResponse(res, StatusCode.CONFLICT, 'Nama tim telah digunakan', errorMessage)
             return
         }
