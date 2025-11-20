@@ -27,6 +27,7 @@ const server = http.createServer(app)
 setupSocket(server)
 
 app.get('/', (_, res) => res.send('🚀 Server is running'))
+app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')))
 app.use('/api', mainRoutes)
 
 connectPrisma()
