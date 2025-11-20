@@ -61,5 +61,5 @@ export const saveImageToDisk = (file: Express.Multer.File, name: string, nameFil
 
     fs.writeFileSync(fullPath, file.buffer)
 
-    return `/uploads/images/${path.basename(targetFolder)}/${filename}`
+    return `/uploads/${path.basename(targetFolder)}/${filename}`
 }
