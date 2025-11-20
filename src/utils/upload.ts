@@ -56,7 +56,7 @@ export const saveImageToDisk = (file: Express.Multer.File, name: string, nameFil
     else if (name.toLocaleLowerCase().includes('image-tour')) targetFolder = FOLDER_MAP.tourImage
 
     const ext = path.extname(file.originalname)
-    const filename = `${nameFile}-${name}`
+    const filename = `${nameFile}-${name}${ext}`
     const fullPath = path.join(targetFolder, filename)
 
     fs.writeFileSync(fullPath, file.buffer)
